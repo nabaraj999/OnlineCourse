@@ -23,6 +23,8 @@ class CompanyResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Briefcase;
 
+
+
     public static function getNavigationBadge(): ?string
 {
     return static::getModel()::count();
