@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title', 100)->notNullable();
             $table->foreignId('teacher_id')->constrained('teachers')->onDelete('restrict');
             $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
+            $table->foreignId('discount_id')->nullable()->constrained('discounts')->onDelete('set null');
             $table->date('start_date')->notNullable();
             $table->date('end_date')->nullable();
             $table->decimal('price', 10, 2)->notNullable()->check('price >= 0');
