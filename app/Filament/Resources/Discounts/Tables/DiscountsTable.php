@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Discounts\Tables;
 
-use App\Models\Course;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -27,13 +27,6 @@ class DiscountsTable
                     ->weight('bold')
                     ->tooltip('Click to copy discount code'),
 
-                TextColumn::make('course.title')
-                    ->label('Course')
-                    ->limit(20)
-                    ->searchable()
-                    ->sortable()
-                    ->default('Global')
-                    ->toggleable(),
 
                 TextColumn::make('type')
                     ->badge()
@@ -98,8 +91,10 @@ class DiscountsTable
                     ->label('Currently Active'),
             ])
             ->recordActions([
+                  ViewAction::make(),
                 EditAction::make(),
-                ViewAction::make(),
+                DeleteAction::make(),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

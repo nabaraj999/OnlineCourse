@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Discount extends Model
 {
     protected $fillable = [
-        'code', 'course_id', 'type', 'value', 'start_date', 'end_date', 'is_active'
+        'code', 'type', 'value', 'start_date', 'end_date', 'is_active'
     ];
 
     protected $casts = [

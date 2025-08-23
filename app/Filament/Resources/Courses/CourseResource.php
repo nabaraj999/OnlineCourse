@@ -19,13 +19,20 @@ class CourseResource extends Resource
     protected static ?string $model = Course::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::AcademicCap;
-      public static function getNavigationBadge(): ?string
-{
-    return static::getModel()::count();
-}
 
     protected static ?string $recordTitleAttribute = 'Course';
     protected static ?string $navigationBadgeTooltip = 'Course Details';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return static::getModel()::count() > 10 ? 'warning' : 'primary';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return CourseForm::configure($schema);

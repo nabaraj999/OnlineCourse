@@ -23,13 +23,6 @@ class DiscountForm
                     ->placeholder('e.g., SUMMER10')
                     ->helperText('Unique discount code (max 50 characters)'),
 
-                Select::make('course_id')
-                    ->relationship('course', 'title') // Assumes Course model has a 'title' column
-                    ->nullable()
-                    ->searchable()
-                    ->preload()
-                    ->helperText('Select a course (optional, leave blank for global discount)'),
-
                 Select::make('type')
                     ->options(['percentage' => 'Percentage', 'fixed' => 'Fixed'])
                     ->default('percentage')

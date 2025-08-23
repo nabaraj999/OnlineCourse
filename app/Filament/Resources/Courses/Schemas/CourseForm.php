@@ -39,6 +39,13 @@ class CourseForm
                     ->preload()
                     ->helperText('Select the associated company'),
 
+                Select::make('discount_id')
+                    ->relationship('discount', 'value') // Assumes Discount model has a 'value' column
+                    ->nullable()
+                    ->searchable()
+                    ->preload()
+                    ->helperText('Select a discount (optional)'),
+
                 DatePicker::make('start_date')
                     ->required()
                     ->maxDate(now()->addYear())

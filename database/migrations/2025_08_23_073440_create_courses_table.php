@@ -32,6 +32,7 @@ return new class extends Migration
 
             $table->index('teacher_id');
             $table->index('company_id');
+            $table->index('discount_id');
             $table->index('start_date');
         });
     }
