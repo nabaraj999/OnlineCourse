@@ -34,6 +34,9 @@ class TeacherPanelProvider extends PanelProvider
             ->passwordReset()
             ->emailVerification()
             ->emailChangeVerification()
+                //  ->sidebarCollapsibleOnDesktop()
+                 ->sidebarFullyCollapsibleOnDesktop()
+
             ->registration()
             ->colors([
                 'primary' => Color::Amber,

@@ -5,6 +5,7 @@ namespace App\Filament\Teacher\Resources\Teachers\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Tables\Columns\Column;
@@ -19,12 +20,6 @@ class TeachersTable
     {
         return $table
             ->columns([
-                ImageColumn::make('logo')
-                    ->label('Profile Picture')
-                    ->circular()
-                    ->disk('public')
-                    ->defaultImageUrl(url('images/default-avatar.png'))
-                    ->extraAttributes(['class' => 'shadow-sm', 'style' => 'width: 64px; height: 64px;']),
 
 
                 TextColumn::make('name')
@@ -38,12 +33,12 @@ class TeachersTable
                     ->copyMessage('Email copied!')
                     ->extraAttributes(['class' => 'text-indigo-600']),
                 TextColumn::make('subject')
-                    ->label('Subject Taught')
+                    ->label('Subject')
                     ->badge()
                     ->color('primary'),
 
                 TextColumn::make('account_status')
-                    ->label('Account Status')
+                    ->label(' Status')
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'active' => 'success',
@@ -56,6 +51,7 @@ class TeachersTable
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
 
             ])

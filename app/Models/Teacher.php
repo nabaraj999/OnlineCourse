@@ -20,17 +20,20 @@ class Teacher extends Authenticatable implements FilamentUser
      *
      * @var list<string>
      */
-    protected $fillable = [
+     protected $fillable = [
         'name',
         'email',
+        'logo',
+        'phone',
+        'address',
+        'subject',
+        'bio',
+        'website',
+        'experience',
         'password',
+        'account_status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
