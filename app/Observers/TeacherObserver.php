@@ -31,7 +31,9 @@ class TeacherObserver
      */
     public function updated(Teacher $teacher): void
     {
-
+        if ($teacher->wasChanged('account_status') && $teacher->account_status === 'active') {
+            Mail::to($teacher->email)->send(new TeacherApprovalNotification($teacher));
+        }
 
     }
 

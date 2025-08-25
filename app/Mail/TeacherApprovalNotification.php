@@ -12,13 +12,13 @@ use Illuminate\Queue\SerializesModels;
 class TeacherApprovalNotification extends Mailable
 {
     use Queueable, SerializesModels;
-
+public $Teacher;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+ public function __construct($Teacher)
     {
-
+$this->Teacher = $Teacher;
     }
 
     /**

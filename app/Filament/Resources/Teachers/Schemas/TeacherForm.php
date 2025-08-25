@@ -49,8 +49,7 @@ class TeacherForm
                     ->default(null)
                     ->columnSpanFull(),
 
-                Textarea::make('password')
-                    ->required(),
+                
 
                Select::make('account_status')
                     ->label('Account Status')
