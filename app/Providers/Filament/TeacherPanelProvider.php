@@ -18,6 +18,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class TeacherPanelProvider extends PanelProvider
 {
@@ -28,6 +30,10 @@ class TeacherPanelProvider extends PanelProvider
             ->path('teacher')
             ->authGuard('teacher')
             ->login()
+            ->profile()
+            ->passwordReset()
+            ->emailVerification()
+            ->emailChangeVerification()
             ->registration()
             ->colors([
                 'primary' => Color::Amber,

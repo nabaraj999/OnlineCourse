@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('admin')
             ->id('admin')
             ->path('admin')
+            ->profile()
             ->registration()
             ->login()
 
