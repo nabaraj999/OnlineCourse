@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Teachers\Schemas;
 
+use Dom\Text;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -16,14 +17,14 @@ class TeacherForm
             ->components([
                 // personal information can't change by admin
                 TextInput::make('name')
-                    ->required()
-                    ->disabled(),
+                    ->required(),
+
 
                 TextInput::make('email')
                     ->label('Email address')
-                    ->email()
-                    ->disabled()
-                    ->required(),
+                    ->email(),
+
+
                 FileUpload::make('logo')
                 ->disabled()
                     ->default(null),
@@ -48,7 +49,12 @@ class TeacherForm
                     ->default(null)
                     ->columnSpanFull(),
 
+                Textarea::make('password')
+                    ->required(),
+
                Select::make('account_status')
+                    ->label('Account Status')
+                    ->required()
                   ->options([
                     'active' => 'Active',
                     'inactive' => 'Inactive',

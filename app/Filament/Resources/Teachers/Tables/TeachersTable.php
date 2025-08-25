@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Teachers\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -33,13 +34,7 @@ class TeachersTable
                     ->copyMessage('Email copied!')
                     ->extraAttributes(['class' => 'text-indigo-600']),
 
-                TextColumn::make('phone')
-                    ->label('Phone Number')
-                    ->searchable()
-                    ->sortable()
-                    ->icon('heroicon-o-phone')
-                    ->copyable()
-                    ->copyMessage('Phone number copied!'),
+              
 
                 TextColumn::make('account_status')
                     ->label('Status')
@@ -82,6 +77,7 @@ class TeachersTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
 
             ])
             ->toolbarActions([

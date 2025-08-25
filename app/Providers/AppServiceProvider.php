@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Teacher;
+use App\Observers\TeacherObserver;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Model::unguard();
+        Teacher::observe(TeacherObserver::class);
     }
 }
