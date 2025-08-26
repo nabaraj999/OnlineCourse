@@ -10,7 +10,8 @@
         "brick/math": "0.11",
         "filament/filament": "^4.0",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "owenvoke/blade-fontawesome": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

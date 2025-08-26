@@ -11,14 +11,14 @@ use App\Models\Discount;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+
 use Filament\Tables\Table;
 
 class DiscountResource extends Resource
 {
     protected static ?string $model = Discount::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::ArrowPath;
+ protected static ?string $navigationIcon = 'fas-magnifying-glass';
 
     protected static ?string $recordTitleAttribute = 'Discount';
     protected static ?string $navigationBadgeTooltip = 'Discount Details';
