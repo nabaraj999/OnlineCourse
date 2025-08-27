@@ -30,16 +30,7 @@ class CompanyForm
                             ->maxLength(1000)
                             ->placeholder('Describe your company')
                             ->columnSpanFull(),
-                        Select::make('company_type')
-                            ->options([
-                                'private' => 'Private',
-                                'public' => 'Public',
-                                'non_profit' => 'Non-Profit',
-                                'government' => 'Government',
-                                'startup' => 'Startup',
-                            ])
-                            ->default(null)
-                            ->searchable(),
+
                         DatePicker::make('founded_date')
                             ->maxDate(now())
                             ->displayFormat('Y-m-d'),
@@ -112,10 +103,7 @@ class CompanyForm
                             ->url()
                             ->maxLength(255)
                             ->placeholder('https://youtube.com/company'),
-                        TextInput::make('twitter_handle')
-                            ->default(null)
-                            ->maxLength(15)
-                            ->placeholder('@company'),
+
                     ])
                     ->collapsible(),
 
@@ -129,11 +117,7 @@ class CompanyForm
                             ->default(null)
                             ->maxLength(50)
                             ->placeholder('Enter PAN number'),
-                        TextInput::make('employee_count')
-                            ->numeric()
-                            ->default(null)
-                            ->minValue(0)
-                            ->placeholder('Number of employees'),
+
                     ])
                     ->collapsible(),
 
@@ -149,26 +133,11 @@ class CompanyForm
                             ->tel()
                             ->maxLength(20)
                             ->placeholder('+1234567890'),
-                        TextInput::make('telegram_handle')
-                            ->default(null)
-                            ->maxLength(32)
-                            ->placeholder('@company'),
+
                     ])
                     ->collapsible(),
 
-                ComponentsSection::make('Operating Status')
-                    ->schema([
-                        Toggle::make('is_active')
-                            ->label('Active Status')
-                            ->default(true)
-                            ->helperText('Toggle to indicate if the company is currently active'),
-                        Textarea::make('operating_hours')
-                            ->default(null)
-                            ->maxLength(500)
-                            ->placeholder('e.g., Mon-Fri: 9AM-5PM')
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible(),
+             
             ]);
     }
 }

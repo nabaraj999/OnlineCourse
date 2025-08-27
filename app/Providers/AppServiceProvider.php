@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Company;
 use App\Models\Teacher;
 use App\Observers\TeacherObserver;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,15 +25,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $company = Company::first();
+        View::share(['company' => $company]);
+
+
         Model::unguard();
         Teacher::observe(TeacherObserver::class);
 
-
-        FilamentIcon::register([
-        'panels::topbar.global-search.field' => 'fa-solid fa-magnifying-glass',
-        'panels::sidebar.group.collapse-button' => 'fa-solid fa-caret-up',
-    ]);
-
-    
     }
 }
