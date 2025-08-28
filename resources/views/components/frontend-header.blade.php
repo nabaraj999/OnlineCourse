@@ -1,127 +1,158 @@
+<!-- ✅ Top Info Bar -->
+<nav class="bg-white shadow-md fixed w-full z-50 top-0 left-0">
+  <!-- Top Contact Bar -->
+  <div class="bg-primary text-white text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-4 py-2">
+      <!-- Left: Contact Info -->
+      <div class="flex flex-wrap space-x-4 sm:space-x-6 items-center">
+        <a href="mailto:Test@gmail.com" class="hover:text-secondary flex items-center transition">
+          <i class="fas fa-envelope mr-1 sm:mr-2"></i>
+          <span class="hidden sm:inline">Test@gmail.com</span>
+        </a>
+        <a href="tel:+9779842943275" class="hover:text-secondary flex items-center transition">
+          <i class="fas fa-phone mr-1 sm:mr-2"></i>
+          <span class="hidden sm:inline">+977 9842943275</span>
+        </a>
+        <a href="https://wa.me/9861404971" target="_blank" class="hover:text-secondary flex items-center transition">
+          <i class="fab fa-whatsapp mr-1 sm:mr-2"></i>
+          <span class="hidden sm:inline">9861404971</span>
+        </a>
+        <a href="viber://chat?number=%2B9779861404972" class="hover:text-secondary flex items-center transition">
+          <i class="fab fa-viber mr-1 sm:mr-2"></i>
+          <span class="hidden sm:inline">9861404972</span>
+        </a>
+      </div>
 
-
-
-    <div class="gradient-bg text-white py-2 px-4">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center text-sm">
-            <div class="flex items-center space-x-6">
-                <a href="tel:{{$company['phone_number'] }}" class="flex items-center space-x-2 hover:text-gray-200 transition duration-300">
-                    <i class="fas fa-phone"></i>
-                    <span>{{ $company['phone_number'] }}</span>
-                </a>
-                <a href="https://wa.me/{{ $company['whatsapp_number'] }}" class="flex items-center space-x-2 hover:text-gray-200 transition duration-300">
-                    <i class="fab fa-whatsapp"></i>
-                    <span>{{ $company['whatsapp_number'] }}</span>
-                </a>
-                <a href="mailto:{{ $company['email'] }}" class="flex items-center space-x-2 hover:text-gray-200 transition duration-300">
-                    <i class="fas fa-envelope"></i>
-                    <span>{{ $company['email'] }}</span>
-                </a>
-            </div>
-            <div class="flex items-center space-x-4">
-                <a href="{{ $company['facebook_url'] }}" class="social-icon hover:text-gray-200">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="{{ $company['instagram_url'] }}" class="social-icon hover:text-gray-200">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-icon hover:text-gray-200">
-                    <i class="fab fa-youtube"></i>
-                </a>
-            </div>
-        </div>
+      <!-- Right: Social Media -->
+      <div class="flex space-x-3 sm:space-x-4">
+        <a href="#" class="hover:text-secondary transition"><i class="fab fa-facebook"></i></a>
+        <a href="#" class="hover:text-secondary transition"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="hover:text-secondary transition"><i class="fab fa-youtube"></i></a>
+      </div>
     </div>
+  </div>
 
-    <!-- Main Navigation -->
-    <nav class="glass-effect shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo -->
-                <div class="flex items-center">
-    @if(!empty($company['logo']))
-        <img src="{{ Storage::url($company->logo) }}" alt="Company Logo" class="w-10 h-10 rounded-lg">
-    @else
-        {{-- Fallback initials if no logo --}}
-        <div class="gradient-bg text-white p-2 rounded-lg floating-animation text-xl font-bold">
-            {{ $company['short_name'] ?? 'EC' }}
+  <!-- ✅ Main Navbar -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16 sm:h-20">
+      <!-- Left: Logo + Menu -->
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <a href="#">
+            <img class="h-8 sm:h-10 w-auto" src="{{ asset('storage/' . $company->logo) }}" alt="EduLearn Logo">
+          </a>
         </div>
-    @endif
-</div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="nav-link text-gray-700 font-medium">Home</a>
-                    <a href="#" class="nav-link text-gray-700 font-medium">Courses</a>
-                    <a href="#" class="nav-link text-gray-700 font-medium">Testimonials</a>
-                    <a href="#" class="nav-link text-gray-700 font-medium">Mentor</a>
-                    <a href="#" class="nav-link text-gray-700 font-medium">Blog</a>
-                    <a href="#" class="nav-link text-gray-700 font-medium">Gallery</a>
-                </div>
-
-                <!-- Search & Student Portal -->
-                <div class="hidden md:flex items-center space-x-4">
-                    <div class="relative">
-                        <input
-                            type="text"
-                            placeholder="Search..."
-                            class="search-box w-48 px-4 py-2 border-2 border-gray-200 rounded-full focus:outline-none focus:border-purple-500"
-                        >
-                        <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
-                    </div>
-                    <a href="#" class="gradient-bg text-white px-6 py-2 rounded-full font-medium hover:shadow-lg transform hover:scale-105 transition duration-300">
-                        Student Portal
-                    </a>
-                </div>
-
-                <!-- Mobile menu button -->
-                <div class="md:hidden">
-                    <button class="hamburger focus:outline-none" id="mobile-menu-btn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
-            </div>
+        <!-- Desktop Menu -->
+        <div class="hidden lg:ml-10 lg:flex lg:space-x-8">
+          <a href="{{ route('home') }}" class="nav-link">Home</a>
+          <a href="#testimonials" class="nav-link">Testimonials</a>
+          <a href="#mentors" class="nav-link">Mentors</a>
+          <a href="#blog" class="nav-link">Blog</a>
+          <a href="#courses" class="nav-link">Courses</a>
         </div>
+      </div>
 
-        <!-- Mobile Menu -->
-        <div class="mobile-menu fixed top-0 left-0 w-full h-full bg-white z-40 md:hidden" id="mobile-menu">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-8">
-                    <div class="flex items-center">
-                        <div class="gradient-bg text-white p-2 rounded-lg">
-                            <i class="fas fa-graduation-cap text-xl"></i>
-                        </div>
-                        <span class="ml-2 text-xl font-bold text-gray-800">EduCorp</span>
-                    </div>
-                    <button class="hamburger active" id="close-menu-btn">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                </div>
-
-                <div class="space-y-6">
-                    <a href="#" class="block text-lg font-medium text-gray-700 hover:text-purple-600 transition duration-300">Home</a>
-                    <a href="#" class="block text-lg font-medium text-gray-700 hover:text-purple-600 transition duration-300">Courses</a>
-                    <a href="#" class="block text-lg font-medium text-gray-700 hover:text-purple-600 transition duration-300">Testimonials</a>
-                    <a href="#" class="block text-lg font-medium text-gray-700 hover:text-purple-600 transition duration-300">Mentor</a>
-                    <a href="#" class="block text-lg font-medium text-gray-700 hover:text-purple-600 transition duration-300">Blog</a>
-                    <a href="#" class="block text-lg font-medium text-gray-700 hover:text-purple-600 transition duration-300">Gallery</a>
-
-                    <div class="pt-4">
-                        <div class="relative mb-4">
-                            <input
-                                type="text"
-                                placeholder="Search..."
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-full focus:outline-none focus:border-purple-500"
-                            >
-                            <i class="fas fa-search absolute right-4 top-4 text-gray-400"></i>
-                        </div>
-                        <a href="#" class="block gradient-bg text-white text-center px-6 py-3 rounded-full font-medium hover:shadow-lg transition duration-300">
-                            Student Portal
-                        </a>
-                    </div>
-                </div>
-            </div>
+      <!-- Right: Search + Student Portal -->
+      <div class="hidden lg:flex items-center space-x-4">
+        <div class="relative">
+          <input type="text" placeholder="Search..." class="border border-gray-300 rounded-lg pl-3 pr-10 py-1.5 focus:ring-2 focus:ring-secondary focus:outline-none text-sm">
+          <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-secondary">
+            <i class="fas fa-search"></i>
+          </button>
         </div>
-    </nav>
+        <a href="#" class="bg-secondary hover:bg-opacity-90 text-white px-4 py-2 rounded-lg font-medium transition duration-300 shadow-md text-sm">
+          Student Portal
+        </a>
+      </div>
+
+      <!-- Mobile Button -->
+      <div class="lg:hidden flex items-center">
+        <button id="mobile-menu-button" class="text-primary hover:text-secondary focus:outline-none">
+          <i class="fas fa-bars text-xl sm:text-2xl"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Mobile Menu -->
+  <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-md px-4 py-4 space-y-3 overflow-hidden transition-max-height duration-300 ease-in-out" style="max-height: 0;">
+    <a href="{{ route('home') }}" class="nav-link block">Home</a>
+    <a href="#testimonials" class="nav-link block">Testimonials</a>
+    <a href="#mentors" class="nav-link block">Mentors</a>
+    <a href="#blog" class="nav-link block">Blog</a>
+    <a href="#courses" class="nav-link block">Courses</a>
+    <div class="relative">
+      <input type="text" placeholder="Search..." class="w-full border border-gray-300 rounded-lg pl-3 pr-10 py-1.5 focus:ring-2 focus:ring-secondary focus:outline-none text-sm">
+      <button class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-secondary">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+    <a href="#" class="block bg-secondary text-white px-3 py-2 rounded-lg text-center font-medium">Student Portal</a>
+  </div>
+</nav>
+
+
+<!-- ✅ Styles -->
+<style>
+  .nav-link {
+    @apply text-gray-600 hover:text-primary font-medium transition duration-300 py-2;
+  }
+  .nav-link.active {
+    @apply border-b-2 border-yellow-500 text-primary font-semibold;
+  }
+  #mobile-menu.open {
+    max-height: 300px; /* Adjust based on content height */
+  }
+  body {
+    padding-top: 100px; /* Adjust based on navbar + top bar height */
+  }
+  /* Match button color for consistency */
+  .bg-secondary {
+    background-color: #F59E0B; /* Orange from the image */
+  }
+  .hover:bg-opacity-90:hover {
+    background-color: #F59E0B; /* Darker shade on hover */
+  }
+</style>
+
+<!-- ✅ Scripts -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // ✅ Toggle Menu (open/close)
+    mobileMenuButton.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('open')) {
+        mobileMenu.classList.remove('open');
+        mobileMenu.style.maxHeight = '0';
+      } else {
+        mobileMenu.classList.add('open');
+        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+      }
+    });
+
+    // ✅ Auto close menu on link click
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileMenu.style.maxHeight = '0';
+      });
+    });
+
+    // ✅ Set active link based on current page
+    function setActiveLink() {
+      const links = document.querySelectorAll('.nav-link');
+      const currentPath = window.location.pathname;
+      const currentHash = window.location.hash || '#home';
+
+      links.forEach(link => {
+        const href = link.getAttribute('href');
+        const isActive = (href === currentPath || href === currentHash || (href === '{{ route("home") }}' && currentPath === '/'));
+        link.classList.toggle('active', isActive);
+      });
+    }
+    setActiveLink();
+    window.addEventListener('hashchange', setActiveLink);
+  });
+</script>

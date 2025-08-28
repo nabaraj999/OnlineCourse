@@ -1,1 +1,1 @@
-
+<x-frontend-layout />
