@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon) }}" alt="FinHedge Logo"
         class="h-auto w-auto">
-
+ <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
      <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,7 +25,7 @@
 
 
 </body>
-<div id="support-widget">
+  <div id="support-widget">
         <!-- Floating Button -->
         <button id="support-button" class="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-primary shadow-2xl flex items-center justify-center text-white text-2xl animate-float z-50">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,22 +70,6 @@
                                         <p>Hello! I'm your AI assistant. How can I help you with your course today?</p>
                                     </div>
                                 </div>
-
-                                <!-- User Message (Sample) -->
-                                <div class="flex items-start space-x-2 justify-end">
-                                    <div class="bg-secondary text-white rounded-lg p-3 max-w-xs">
-                                        <p>I'm having trouble accessing week 3 materials.</p>
-                                    </div>
-                                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
-                                </div>
-
-                                <!-- AI Response (Sample) -->
-                                <div class="flex items-start space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">🤖</div>
-                                    <div class="bg-primary text-white rounded-lg p-3 max-w-xs">
-                                        <p>Sometimes this happens if your browser cache needs clearing. Try pressing Ctrl+F5 to hard refresh, or try in incognito mode.</p>
-                                    </div>
-                                </div>
                             </div>
 
                             <!-- Input Area -->
@@ -107,14 +91,15 @@
                             <h3 class="text-xl font-bold text-center mb-6">Create Support Ticket 🎫</h3>
 
                             <!-- Ticket Form -->
-                            <form id="ticket-form" class="space-y-4">
+                             <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST" class="space-y-4">
+                                @csrf
                                 <div class="grid grid-cols-1 gap-4">
                                     <!-- Full Name -->
                                     <div class="relative">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <span class="text-gray-500">👤</span>
                                         </div>
-                                        <input type="text" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Full Name" required>
+                                        <input type="text" name="name" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Full Name" required>
                                     </div>
 
                                     <!-- Email Address -->
@@ -122,7 +107,7 @@
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <span class="text-gray-500">📧</span>
                                         </div>
-                                        <input type="email" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Email Address" required>
+                                        <input type="email" name="email" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Email Address" required>
                                     </div>
 
                                     <!-- Phone Number -->
@@ -130,7 +115,7 @@
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <span class="text-gray-500">📞</span>
                                         </div>
-                                        <input type="tel" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Phone Number">
+                                        <input type="tel" name="phone" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Phone Number">
                                     </div>
 
                                     <!-- Problem/Issue -->
@@ -138,7 +123,7 @@
                                         <div class="absolute top-3 left-3 pointer-events-none">
                                             <span class="text-gray-500">📝</span>
                                         </div>
-                                        <textarea class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Describe your problem/issue" rows="4" required></textarea>
+                                        <textarea name="issue" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Describe your problem/issue" rows="4" required></textarea>
                                     </div>
                                 </div>
 
@@ -153,6 +138,8 @@
             </div>
         </div>
     </div>
+
+
 <script>
     tailwind.config = {
         theme: {
@@ -183,8 +170,6 @@
         }
     }
 </script>
-
-
  <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get DOM elements
@@ -197,8 +182,8 @@
             const ticketContent = document.getElementById('ticket-content');
             const messageInput = document.getElementById('message-input');
             const sendMessage = document.getElementById('send-message');
-            const chatMessages = document.getElementById('chat-messages');
             const ticketForm = document.getElementById('ticket-form');
+            const chatMessages = document.getElementById('chat-messages');
 
             // Open modal when support button is clicked
             supportButton.addEventListener('click', function() {
@@ -244,13 +229,10 @@
             sendMessage.addEventListener('click', function() {
                 const message = messageInput.value.trim();
                 if (message) {
-                    // Add user message
                     addMessage(message, 'user');
                     messageInput.value = '';
 
-                    // Simulate AI response after a short delay
                     setTimeout(() => {
-                        // Simple FAQ responses
                         let response = "I'm sorry, I didn't understand that. Can you please provide more details?";
 
                         if (message.toLowerCase().includes('access') || message.toLowerCase().includes('material')) {
@@ -275,15 +257,57 @@
             });
 
             // Handle ticket form submission
-            ticketForm.addEventListener('submit', function(e) {
+            ticketForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
 
-                // In a real implementation, this would send data to a Laravel backend
-                alert('Ticket submitted successfully! Our support team will contact you soon.');
-                ticketForm.reset();
+                const formData = new FormData(ticketForm);
+                const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                if (!csrfToken) {
+                    console.error('CSRF token not found.');
+                    alert('CSRF token missing. Please refresh the page.');
+                    return;
+                }
 
-                // Switch back to chat tab after submission
-                chatTab.click();
+                // Log form data for debugging
+                for (let pair of formData.entries()) {
+                    console.log('Form data:', pair[0] + ': ' + pair[1]);
+                }
+
+                try {
+                    const response = await fetch('{{ route('tickets.store') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken.content,
+                            'Accept': 'application/json',
+                        },
+                        body: formData,
+                    });
+
+                    console.log('Server response:', response); // Log full response object
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        let errorMessage = `HTTP error! status: ${response.status}`;
+                        if (response.status === 419) {
+                            errorMessage += ' - Possible CSRF token mismatch. Refresh the page and try again.';
+                        } else if (response.status === 422) {
+                            errorMessage += ' - Validation error: ' + errorText;
+                        } else if (response.status === 500) {
+                            errorMessage += ' - Server error. Check logs.';
+                        } else {
+                            errorMessage += ' - ' + errorText;
+                        }
+                        throw new Error(errorMessage);
+                    }
+
+                    const data = await response.json();
+                    alert(data.message);
+                    ticketForm.reset();
+                    chatTab.click();
+                } catch (error) {
+                    console.error('Ticket submission error:', error);
+                    alert(`Failed to submit ticket. Error: ${error.message}. Check the console for details.`);
+                }
             });
 
             // Helper function to add messages to chat
@@ -314,7 +338,6 @@
         });
     </script>
 
-    
 <style type="text/tailwindcss">
     @layer utilities {
         .animation-delay-2000 {
