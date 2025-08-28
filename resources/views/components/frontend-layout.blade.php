@@ -91,47 +91,57 @@
                             <h3 class="text-xl font-bold text-center mb-6">Create Support Ticket 🎫</h3>
 
                             <!-- Ticket Form -->
-                             <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST" class="space-y-4">
-                                @csrf
-                                <div class="grid grid-cols-1 gap-4">
-                                    <!-- Full Name -->
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">👤</span>
-                                        </div>
-                                        <input type="text" name="name" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Full Name" required>
-                                    </div>
+                            <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST" class="space-y-4">
+    @csrf
+    <div class="grid grid-cols-1 gap-4">
+        <!-- Full Name -->
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <i class="fas fa-user"></i>
+            </div>
+            <input type="text" name="name"
+                   class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                   placeholder="Full Name" required>
+        </div>
 
-                                    <!-- Email Address -->
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">📧</span>
-                                        </div>
-                                        <input type="email" name="email" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Email Address" required>
-                                    </div>
+        <!-- Email Address -->
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <input type="email" name="email"
+                   class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                   placeholder="Email Address" required>
+        </div>
 
-                                    <!-- Phone Number -->
-                                    <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span class="text-gray-500">📞</span>
-                                        </div>
-                                        <input type="tel" name="phone" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Phone Number">
-                                    </div>
+        <!-- Phone Number -->
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <i class="fas fa-phone"></i>
+            </div>
+            <input type="tel" name="phone"
+                   class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                   placeholder="Phone Number">
+        </div>
 
-                                    <!-- Problem/Issue -->
-                                    <div class="relative">
-                                        <div class="absolute top-3 left-3 pointer-events-none">
-                                            <span class="text-gray-500">📝</span>
-                                        </div>
-                                        <textarea name="issue" class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Describe your problem/issue" rows="4" required></textarea>
-                                    </div>
-                                </div>
+        <!-- Problem/Issue -->
+        <div class="relative">
+            <div class="absolute top-3 left-3 text-gray-400 pointer-events-none">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+            <textarea name="issue" rows="4"
+                      class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                      placeholder="Describe your problem/issue" required></textarea>
+        </div>
+    </div>
 
-                                <!-- Submit Button -->
-                                <button type="submit" class="w-full bg-secondary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:scale-105 transition transform duration-200">
-                                    Submit Ticket
-                                </button>
-                            </form>
+    <!-- Submit Button -->
+    <button type="submit"
+            class="w-full bg-secondary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:scale-105 hover:bg-opacity-90 transition transform duration-200 flex items-center justify-center gap-2">
+        <i class="fas fa-paper-plane"></i> Submit Ticket
+    </button>
+</form>
+
                         </div>
                     </div>
                 </div>
@@ -170,173 +180,190 @@
         }
     }
 </script>
- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get DOM elements
-            const supportButton = document.getElementById('support-button');
-            const modalOverlay = document.getElementById('modal-overlay');
-            const closeModal = document.getElementById('close-modal');
-            const chatTab = document.getElementById('chat-tab');
-            const ticketTab = document.getElementById('ticket-tab');
-            const chatContent = document.getElementById('chat-content');
-            const ticketContent = document.getElementById('ticket-content');
-            const messageInput = document.getElementById('message-input');
-            const sendMessage = document.getElementById('send-message');
-            const ticketForm = document.getElementById('ticket-form');
-            const chatMessages = document.getElementById('chat-messages');
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get DOM elements
+        const supportButton = document.getElementById('support-button');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeModal = document.getElementById('close-modal');
+        const chatTab = document.getElementById('chat-tab');
+        const ticketTab = document.getElementById('ticket-tab');
+        const chatContent = document.getElementById('chat-content');
+        const ticketContent = document.getElementById('ticket-content');
+        const messageInput = document.getElementById('message-input');
+        const sendMessage = document.getElementById('send-message');
+        const ticketForm = document.getElementById('ticket-form');
+        const chatMessages = document.getElementById('chat-messages');
 
-            // Open modal when support button is clicked
-            supportButton.addEventListener('click', function() {
-                modalOverlay.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            });
+        // Open modal when support button is clicked
+        supportButton.addEventListener('click', function() {
+            modalOverlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        });
 
-            // Close modal when close button is clicked
-            closeModal.addEventListener('click', function() {
+        // Close modal when close button is clicked
+        closeModal.addEventListener('click', function() {
+            modalOverlay.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside of modal content
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
                 modalOverlay.classList.add('hidden');
                 document.body.style.overflow = 'auto';
-            });
-
-            // Close modal when clicking outside of modal content
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) {
-                    modalOverlay.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                }
-            });
-
-            // Switch to chat tab
-            chatTab.addEventListener('click', function() {
-                chatTab.classList.add('text-primary', 'border-primary', 'bg-light');
-                chatTab.classList.remove('text-gray-500');
-                ticketTab.classList.remove('text-primary', 'border-primary', 'bg-light');
-                ticketTab.classList.add('text-gray-500');
-                chatContent.classList.remove('hidden');
-                ticketContent.classList.add('hidden');
-            });
-
-            // Switch to ticket tab
-            ticketTab.addEventListener('click', function() {
-                ticketTab.classList.add('text-primary', 'border-primary', 'bg-light');
-                ticketTab.classList.remove('text-gray-500');
-                chatTab.classList.remove('text-primary', 'border-primary', 'bg-light');
-                chatTab.classList.add('text-gray-500');
-                ticketContent.classList.remove('hidden');
-                chatContent.classList.add('hidden');
-            });
-
-            // Send message in chat
-            sendMessage.addEventListener('click', function() {
-                const message = messageInput.value.trim();
-                if (message) {
-                    addMessage(message, 'user');
-                    messageInput.value = '';
-
-                    setTimeout(() => {
-                        let response = "I'm sorry, I didn't understand that. Can you please provide more details?";
-
-                        if (message.toLowerCase().includes('access') || message.toLowerCase().includes('material')) {
-                            response = "For access issues, please try clearing your browser cache or using a different browser. If the problem persists, contact technical support.";
-                        } else if (message.toLowerCase().includes('video') || message.toLowerCase().includes('play')) {
-                            response = "Video playback issues are often related to internet connection. Try lowering the video quality or downloading the video for offline viewing.";
-                        } else if (message.toLowerCase().includes('certificate') || message.toLowerCase().includes('complete')) {
-                            response = "Certificates are automatically generated when you complete all course requirements. Please allow up to 24 hours for certificate generation after completion.";
-                        }
-
-                        addMessage(response, 'ai');
-                    }, 1000);
-                }
-            });
-
-            // Allow sending message with Enter key
-            messageInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage.click();
-                }
-            });
-
-            // Handle ticket form submission
-            ticketForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(ticketForm);
-                const csrfToken = document.querySelector('meta[name="csrf-token"]');
-                if (!csrfToken) {
-                    console.error('CSRF token not found.');
-                    alert('CSRF token missing. Please refresh the page.');
-                    return;
-                }
-
-                // Log form data for debugging
-                for (let pair of formData.entries()) {
-                    console.log('Form data:', pair[0] + ': ' + pair[1]);
-                }
-
-                try {
-                    const response = await fetch('{{ route('tickets.store') }}', {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken.content,
-                            'Accept': 'application/json',
-                        },
-                        body: formData,
-                    });
-
-                    console.log('Server response:', response); // Log full response object
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        let errorMessage = `HTTP error! status: ${response.status}`;
-                        if (response.status === 419) {
-                            errorMessage += ' - Possible CSRF token mismatch. Refresh the page and try again.';
-                        } else if (response.status === 422) {
-                            errorMessage += ' - Validation error: ' + errorText;
-                        } else if (response.status === 500) {
-                            errorMessage += ' - Server error. Check logs.';
-                        } else {
-                            errorMessage += ' - ' + errorText;
-                        }
-                        throw new Error(errorMessage);
-                    }
-
-                    const data = await response.json();
-                    alert(data.message);
-                    ticketForm.reset();
-                    chatTab.click();
-                } catch (error) {
-                    console.error('Ticket submission error:', error);
-                    alert(`Failed to submit ticket. Error: ${error.message}. Check the console for details.`);
-                }
-            });
-
-            // Helper function to add messages to chat
-            function addMessage(text, sender) {
-                const messageDiv = document.createElement('div');
-                messageDiv.classList.add('flex', 'items-start', 'space-x-2');
-
-                if (sender === 'user') {
-                    messageDiv.classList.add('justify-end');
-                    messageDiv.innerHTML = `
-                        <div class="bg-secondary text-white rounded-lg p-3 max-w-xs">
-                            <p>${text}</p>
-                        </div>
-                        <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
-                    `;
-                } else {
-                    messageDiv.innerHTML = `
-                        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">🤖</div>
-                        <div class="bg-primary text-white rounded-lg p-3 max-w-xs">
-                            <p>${text}</p>
-                        </div>
-                    `;
-                }
-
-                chatMessages.appendChild(messageDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         });
-    </script>
+
+        // Switch to chat tab
+        chatTab.addEventListener('click', function() {
+            chatTab.classList.add('text-primary', 'border-primary', 'bg-light');
+            chatTab.classList.remove('text-gray-500');
+            ticketTab.classList.remove('text-primary', 'border-primary', 'bg-light');
+            ticketTab.classList.add('text-gray-500');
+            chatContent.classList.remove('hidden');
+            ticketContent.classList.add('hidden');
+        });
+
+        // Switch to ticket tab
+        ticketTab.addEventListener('click', function() {
+            ticketTab.classList.add('text-primary', 'border-primary', 'bg-light');
+            ticketTab.classList.remove('text-gray-500');
+            chatTab.classList.remove('text-primary', 'border-primary', 'bg-light');
+            chatTab.classList.add('text-gray-500');
+            ticketContent.classList.remove('hidden');
+            chatContent.classList.add('hidden');
+        });
+
+        // Send message in chat
+        sendMessage.addEventListener('click', function() {
+            const message = messageInput.value.trim();
+            if (message) {
+                addMessage(message, 'user');
+                messageInput.value = '';
+
+                setTimeout(() => {
+                    let response = "I'm sorry, I didn't understand that. Can you please provide more details?";
+
+                    if (message.toLowerCase().includes('access') || message.toLowerCase().includes('material')) {
+                        response = "For access issues, please try clearing your browser cache or using a different browser. If the problem persists, contact technical support.";
+                    } else if (message.toLowerCase().includes('video') || message.toLowerCase().includes('play')) {
+                        response = "Video playback issues are often related to internet connection. Try lowering the video quality or downloading the video for offline viewing.";
+                    } else if (message.toLowerCase().includes('certificate') || message.toLowerCase().includes('complete')) {
+                        response = "Certificates are automatically generated when you complete all course requirements. Please allow up to 24 hours for certificate generation after completion.";
+                    }
+
+                    addMessage(response, 'ai');
+                }, 1000);
+            }
+        });
+
+        // Allow sending message with Enter key
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage.click();
+            }
+        });
+
+        // Handle ticket form submission
+        ticketForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(ticketForm);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]');
+            if (!csrfToken) {
+                console.error('CSRF token not found.');
+                alert('CSRF token missing. Please refresh the page.');
+                return;
+            }
+
+            // Log form data for debugging
+            for (let pair of formData.entries()) {
+                console.log('Form data:', pair[0] + ': ' + pair[1]);
+            }
+
+            try {
+                const response = await fetch('{{ route('tickets.store') }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken.content,
+                        'Accept': 'application/json',
+                    },
+                    body: formData,
+                });
+
+                console.log('Server response:', response); // Log full response object
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    let errorMessage = `HTTP error! status: ${response.status}`;
+                    if (response.status === 419) {
+                        errorMessage += ' - Possible CSRF token mismatch. Refresh the page and try again.';
+                    } else if (response.status === 422) {
+                        errorMessage += ' - Validation error: ' + errorText;
+                    } else if (response.status === 500) {
+                        errorMessage += ' - Server error. Check logs.';
+                    } else {
+                        errorMessage += ' - ' + errorText;
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+                // Show success notification instead of alert
+                showSuccessNotification(data.message);
+                ticketForm.reset();
+                chatTab.click();
+            } catch (error) {
+                console.error('Ticket submission error:', error);
+                alert(`Failed to submit ticket. Error: ${error.message}. Check the console for details.`);
+            }
+        });
+
+        // Helper function to add messages to chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('flex', 'items-start', 'space-x-2');
+
+            if (sender === 'user') {
+                messageDiv.classList.add('justify-end');
+                messageDiv.innerHTML = `
+                    <div class="bg-secondary text-white rounded-lg p-3 max-w-xs">
+                        <p>${text}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">👤</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">🤖</div>
+                    <div class="bg-primary text-white rounded-lg p-3 max-w-xs">
+                        <p>${text}</p>
+                    </div>
+                `;
+            }
+
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Function to show success notification
+        function showSuccessNotification(message) {
+            const notification = document.createElement('div');
+            notification.classList.add('fixed', 'bottom-6', 'right-6', 'bg-green-500', 'text-white', 'px-4', 'py-2', 'rounded-lg', 'shadow-lg', 'transition-opacity', 'duration-300', 'z-50');
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            // Auto-remove after 3 seconds
+            setTimeout(() => {
+                notification.classList.add('opacity-0');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300); // Match transition duration
+            }, 3000);
+        }
+    });
+</script>
 
 <style type="text/tailwindcss">
     @layer utilities {
