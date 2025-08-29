@@ -18,6 +18,11 @@ class TeachersTable
     {
         return $table
             ->columns([
+
+                ImageColumn::make('logo')
+                    ->label('Photo')
+                    ->circular(),
+
                 TextColumn::make('name')
                     ->label('Full Name')
                     ->searchable()
@@ -34,7 +39,7 @@ class TeachersTable
                     ->copyMessage('Email copied!')
                     ->extraAttributes(['class' => 'text-indigo-600']),
 
-              
+
 
                 TextColumn::make('account_status')
                     ->label('Status')

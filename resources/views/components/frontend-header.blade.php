@@ -39,7 +39,7 @@
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <a href="#">
-            <img class="h-8 sm:h-10 w-auto" src="{{ asset('storage/' . $company->logo) }}" alt="EduLearn Logo">
+          <img class="h-8 sm:h-10 w-auto" src="{{ Storage::url($company->logo) }}" alt="EduLearn Logo">
           </a>
         </div>
         <!-- Desktop Menu -->

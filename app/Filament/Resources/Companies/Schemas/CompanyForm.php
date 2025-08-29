@@ -70,19 +70,24 @@ class CompanyForm
                             ->default(null)
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
                             ->maxSize(2048)
-                            ->directory('company-logos'),
+                            ->directory('company-logos')
+                            ->disk('public'),
+
                         FileUpload::make('background_image')
                             ->image()
                             ->default(null)
                             ->acceptedFileTypes(['image/png', 'image/jpeg'])
                             ->maxSize(4096)
-                            ->directory('company-backgrounds'),
+                            ->directory('company-backgrounds')
+                            ->disk('public'),
+
                         FileUpload::make('favicon')
                             ->image()
                             ->default(null)
                             ->acceptedFileTypes(['image/x-icon', 'image/png'])
                             ->maxSize(512)
-                            ->directory('company-favicons'),
+                            ->directory('company-favicons')
+                            ->disk('public'),
                     ])
                     ->collapsible(),
 
@@ -137,7 +142,7 @@ class CompanyForm
                     ])
                     ->collapsible(),
 
-             
+
             ]);
     }
 }
