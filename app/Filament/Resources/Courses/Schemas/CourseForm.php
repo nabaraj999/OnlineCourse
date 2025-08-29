@@ -95,6 +95,7 @@ class CourseForm
                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
                     ->maxSize(2048)
                     ->directory('course-photos')
+                     ->disk('public')
                     ->helperText('Upload a course photo (max 2MB, PNG/JPEG/SVG)'),
 
                 Select::make('active_status')

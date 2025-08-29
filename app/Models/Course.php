@@ -38,20 +38,4 @@ class Course extends Model
         return $this->belongsTo(Discount::class);
     }
 
-    public function getFinalPriceAttribute()
-    {
-        $discount = $this->discount;
-        $originalPrice = $this->price ?? 0.00;
-
-        if ($discount && $discount->is_active && $discount->start_date <= now() &&
-            ($discount->end_date >= now() || $discount->end_date === null)) {
-            if ($discount->price !== null) {
-                return $discount->price; // Use overridden price if provided
-            }
-            $discountPercent = $discount->discount_percent ?? 0.00;
-            return $originalPrice - ($originalPrice * ($discountPercent / 100));
-        }
-
-        return $originalPrice; // No valid discount applied
-    }
 }

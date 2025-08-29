@@ -77,7 +77,7 @@ class CompanyForm
                             ->image()
                             ->default(null)
                             ->acceptedFileTypes(['image/png', 'image/jpeg'])
-                            ->maxSize(4096)
+                            ->maxSize(5096)
                             ->directory('company-backgrounds')
                             ->disk('public'),
 
