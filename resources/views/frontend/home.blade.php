@@ -1,8 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLearn</title>
+    <!-- Include Raleway font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Updated Font Awesome to version 6.5.1 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Apply Raleway font globally, excluding Font Awesome classes */
+        html, body, *:not(.fa, .fa-solid, .fa-regular, .fa-brands) {
+            font-family: 'Raleway', sans-serif !important;
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
     <x-frontend-layout />
 
-
-
-    <!-- ✅ Hero Section -->
+    <!-- Hero Section -->
     <div class="pt-32 pb-12 sm:pt-40 sm:pb-16 md:pt-20 md:pb-20 relative overflow-hidden bg-white pt-0">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row items-center">
@@ -25,7 +43,7 @@
                     <div class="mt-8 sm:mt-10 flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6">
                         <div class="flex items-center">
                             <div class="bg-white p-2 rounded-full shadow-md">
-                                <i class="fas fa-users text-yellow-500 text-lg sm:text-xl"></i>
+                                <i class="fa-solid fa-users text-yellow-500 text-lg sm:text-xl"></i>
                             </div>
                             <div class="ml-3">
                                 <p class="font-bold text-lg sm:text-xl">50K+</p>
@@ -34,7 +52,7 @@
                         </div>
                         <div class="flex items-center">
                             <div class="bg-white p-2 rounded-full shadow-md">
-                                <i class="fas fa-book-open text-yellow-500 text-lg sm:text-xl"></i>
+                                <i class="fa-solid fa-book-open text-yellow-500 text-lg sm:text-xl"></i>
                             </div>
                             <div class="ml-3">
                                 <p class="font-bold text-lg sm:text-xl">500+</p>
@@ -43,7 +61,7 @@
                         </div>
                         <div class="flex items-center">
                             <div class="bg-white p-2 rounded-full shadow-md">
-                                <i class="fas fa-chalkboard-teacher text-yellow-500 text-lg sm:text-xl"></i>
+                                <i class="fa-solid fa-chalkboard-teacher text-yellow-500 text-lg sm:text-xl"></i>
                             </div>
                             <div class="ml-3">
                                 <p class="font-bold text-lg sm:text-xl">200+</p>
@@ -62,63 +80,27 @@
                     <!-- Animated elements -->
                     <div
                         class="absolute top-10 left-10 md:left-20 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center animate-float animation-delay-2000">
-                        <i class="fas fa-graduation-cap text-secondary text-2xl"></i>
+                        <i class="fa-solid fa-graduation-cap text-secondary text-2xl"></i>
                     </div>
                     <div
                         class="absolute bottom-10 right-10 md:right-20 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center animate-float animation-delay-4000">
-                        <i class="fas fa-laptop-code text-secondary text-2xl"></i>
+                        <i class="fa-solid fa-laptop-code text-secondary text-2xl"></i>
                     </div>
                     <div
                         class="absolute top-1/3 right-5 md:right-10 w-12 h-12 bg-secondary rounded-full shadow-lg flex items-center justify-center animate-float">
-                        <i class="fas fa-medal text-white text-xl"></i>
+                        <i class="fa-solid fa-medal text-white text-xl"></i>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ✅ Scripts -->
-    <script>
-        // Toggle Mobile Menu
-        document.getElementById("mobile-menu-button").addEventListener("click", function() {
-            document.getElementById("mobile-menu").classList.toggle("hidden");
-        });
-
-        // Active Navigation
-        document.addEventListener("DOMContentLoaded", function() {
-            const links = document.querySelectorAll(".nav-link");
-            const currentHash = window.location.hash || "#home";
-
-            links.forEach(link => {
-                if (link.getAttribute("href") === currentHash) {
-                    link.classList.add("border-b-2", "border-yellow-500", "text-blue-600", "font-semibold");
-                } else {
-                    link.classList.add("border-b-2", "border-transparent", "hover:border-gray-300",
-                        "hover:text-gray-700");
-                }
-            });
-        });
-
-        // Dynamically adjust body padding based on top bar and navbar height
-        function adjustContentPadding() {
-            const topBar = document.querySelector('.bg-blue-600');
-            const navbar = document.querySelector('nav');
-            const totalHeight = topBar.offsetHeight + navbar.offsetHeight;
-            document.body.style.paddingTop = `${totalHeight}px`;
-        }
-        window.addEventListener('resize', adjustContentPadding);
-        document.addEventListener('DOMContentLoaded', adjustContentPadding);
-    </script>
-    </body>
-
-    </html>
-
-    <!-- Courses Section -->
-<section id="courses" class="py-16 bg-primary bg-opacity-5">
+   <section id="courses" class="py-16 bg-primary bg-opacity-5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             <h2 class="text-3xl font-bold text-gray-900">Popular Courses</h2>
             <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Discover our most popular courses designed to help you achieve your career goals</p>
+            {{-- <p class="mt-2 text-sm text-gray-500">Debug: {{ $courses->count() }} courses fetched</p> --}}
         </div>
 
         <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -129,15 +111,15 @@
                         <div class="flex items-center justify-between mb-3">
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-blue-800">{{ $course->rating }} ★</span>
                             <span class="text-lg font-semibold text-green-600">NPR {{ number_format($course->discounted_price_npr, 2) }}</span>
-                            @if ($course->active_status === 'active' && $course->discount_percentage > 0 && Carbon\Carbon::now()->between(Carbon\Carbon::parse($course->discount_valid_from), Carbon\Carbon::parse($course->discount_valid_to)))
+                            @if ($course->active_status === 'active' && $course->discount_percentage > 0 && Carbon\Carbon::now()->setTimezone('Asia/Kathmandu')->between(Carbon\Carbon::parse($course->discount_valid_from), Carbon\Carbon::parse($course->discount_valid_to)))
                                 <span class="text-sm font-medium text-gray-500 line-through">NPR {{ number_format($course->original_price_npr, 2) }}</span>
                             @endif
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 line-clamp-2">{{ $course->title }}</h3>
                         <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $course->syllabus }}</p>
                         <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
-                            <span class="flex items-center"><i class="far fa-clock mr-1"></i> {{ $course->duration_days }} days</span>
-                            <span class="flex items-center"><i class="fas fa-chair mr-1"></i> {{ $course->available_seats }} seats left</span>
+                            <span class="flex items-center"><i class="fa-regular fa-clock mr-1"></i> {{ $course->duration_days }} days</span>
+                            <span class="flex items-center"><i class="fa-solid fa-chair mr-1"></i> {{ $course->available_seats }} seats left</span>
                         </div>
                         <a href="#" class="mt-5 inline-block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition duration-300">Enroll Now</a>
                     </div>
@@ -150,7 +132,7 @@
         <div class="mt-12 text-center">
             <a href="#" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-primary rounded-lg font-medium transition duration-300">
                 View All Courses
-                <i class="fas fa-arrow-right ml-2"></i>
+                <i class="fa-solid fa-arrow-right ml-2"></i>
             </a>
         </div>
     </div>
@@ -171,17 +153,17 @@
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
                     <div class="h-60 bg-primary flex items-center justify-center relative">
                         <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fas fa-user-tie text-primary text-5xl"></i>
+                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
                         </div>
                         <div
                             class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="flex justify-center space-x-4">
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-linkedin-in"></i></a>
+                                        class="fa-brands fa-linkedin-in"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-twitter"></i></a>
+                                        class="fa-brands fa-twitter"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fas fa-envelope"></i></a>
+                                        class="fa-solid fa-envelope"></i></a>
                             </div>
                         </div>
                     </div>
@@ -197,17 +179,17 @@
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
                     <div class="h-60 bg-primary flex items-center justify-center relative">
                         <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fas fa-user-tie text-primary text-5xl"></i>
+                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
                         </div>
                         <div
                             class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="flex justify-center space-x-4">
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-linkedin-in"></i></a>
+                                        class="fa-brands fa-linkedin-in"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-twitter"></i></a>
+                                        class="fa-brands fa-twitter"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fas fa-envelope"></i></a>
+                                        class="fa-solid fa-envelope"></i></a>
                             </div>
                         </div>
                     </div>
@@ -223,17 +205,17 @@
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
                     <div class="h-60 bg-primary flex items-center justify-center relative">
                         <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fas fa-user-tie text-primary text-5xl"></i>
+                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
                         </div>
                         <div
                             class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="flex justify-center space-x-4">
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-linkedin-in"></i></a>
+                                        class="fa-brands fa-linkedin-in"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-twitter"></i></a>
+                                        class="fa-brands fa-twitter"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fas fa-envelope"></i></a>
+                                        class="fa-solid fa-envelope"></i></a>
                             </div>
                         </div>
                     </div>
@@ -249,17 +231,17 @@
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
                     <div class="h-60 bg-primary flex items-center justify-center relative">
                         <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fas fa-user-tie text-primary text-5xl"></i>
+                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
                         </div>
                         <div
                             class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
                             <div class="flex justify-center space-x-4">
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-linkedin-in"></i></a>
+                                        class="fa-brands fa-linkedin-in"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fab fa-twitter"></i></a>
+                                        class="fa-brands fa-twitter"></i></a>
                                 <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fas fa-envelope"></i></a>
+                                        class="fa-solid fa-envelope"></i></a>
                             </div>
                         </div>
                     </div>
@@ -288,11 +270,11 @@
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <div class="flex items-center">
                         <div class="flex items-center text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
                         </div>
                     </div>
                     <p class="mt-4 text-gray-600 italic">"The web development course completely changed my career path.
@@ -312,11 +294,11 @@
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <div class="flex items-center">
                         <div class="flex items-center text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
                         </div>
                     </div>
                     <p class="mt-4 text-gray-600 italic">"The data science program provided me with practical skills
@@ -337,11 +319,11 @@
                 <div class="bg-white p-6 rounded-xl shadow-lg">
                     <div class="flex items-center">
                         <div class="flex items-center text-yellow-400">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-alt"></i>
                         </div>
                     </div>
                     <p class="mt-4 text-gray-600 italic">"As a complete beginner in design, the UI/UX course was
@@ -374,7 +356,7 @@
                 <div
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2">
                     <div class="h-48 bg-primary flex items-center justify-center">
-                        <i class="fas fa-code text-white text-5xl"></i>
+                        <i class="fa-solid fa-code text-white text-5xl"></i>
                     </div>
                     <div class="p-6">
                         <span class="text-sm text-secondary font-medium">Web Development</span>
@@ -384,7 +366,7 @@
                         <a href="#"
                             class="mt-4 inline-flex items-center text-primary hover:text-secondary font-medium">
                             Read More
-                            <i class="fas fa-arrow-right ml-2"></i>
+                            <i class="fa-solid fa-arrow-right ml-2"></i>
                         </a>
                     </div>
                 </div>
@@ -393,7 +375,7 @@
                 <div
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2">
                     <div class="h-48 bg-primary flex items-center justify-center">
-                        <i class="fas fa-brain text-white text-5xl"></i>
+                        <i class="fa-solid fa-brain text-white text-5xl"></i>
                     </div>
                     <div class="p-6">
                         <span class="text-sm text-secondary font-medium">Data Science</span>
@@ -403,7 +385,7 @@
                         <a href="#"
                             class="mt-4 inline-flex items-center text-primary hover:text-secondary font-medium">
                             Read More
-                            <i class="fas fa-arrow-right ml-2"></i>
+                            <i class="fa-solid fa-arrow-right ml-2"></i>
                         </a>
                     </div>
                 </div>
@@ -412,7 +394,7 @@
                 <div
                     class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2">
                     <div class="h-48 bg-primary flex items-center justify-center">
-                        <i class="fas fa-briefcase text-white text-5xl"></i>
+                        <i class="fa-solid fa-briefcase text-white text-5xl"></i>
                     </div>
                     <div class="p-6">
                         <span class="text-sm text-secondary font-medium">Career Tips</span>
@@ -422,7 +404,7 @@
                         <a href="#"
                             class="mt-4 inline-flex items-center text-primary hover:text-secondary font-medium">
                             Read More
-                            <i class="fas fa-arrow-right ml-2"></i>
+                            <i class="fa-solid fa-arrow-right ml-2"></i>
                         </a>
                     </div>
                 </div>
@@ -444,29 +426,32 @@
         </div>
     </section>
 
-    {{-- <script>
-        // Mobile menu functionality
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const closeMenuButton = document.getElementById('close-menu');
+    <!-- Scripts -->
+    <script>
+        // Active Navigation
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll(".nav-link");
+            const currentHash = window.location.hash || "#home";
 
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.remove('-translate-x-full');
-            document.body.style.overflow = 'hidden';
-        });
-
-        closeMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.add('-translate-x-full');
-            document.body.style.overflow = 'auto';
-        });
-
-        // Close menu when clicking on links
-        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                mobileMenu.classList.add('-translate-x-full');
-                document.body.style.overflow = 'auto';
+            links.forEach(link => {
+                if (link.getAttribute("href") === currentHash) {
+                    link.classList.add("border-b-2", "border-yellow-500", "text-blue-600", "font-semibold");
+                } else {
+                    link.classList.add("border-b-2", "border-transparent", "hover:border-gray-300",
+                        "hover:text-gray-700");
+                }
             });
         });
+
+        // Dynamically adjust body padding based on top bar and navbar height
+        function adjustContentPadding() {
+            const topBar = document.querySelector('.bg-blue-600');
+            const navbar = document.querySelector('nav');
+            const totalHeight = (topBar ? topBar.offsetHeight : 0) + (navbar ? navbar.offsetHeight : 0);
+            document.body.style.paddingTop = `${totalHeight}px`;
+        }
+        window.addEventListener('resize', adjustContentPadding);
+        document.addEventListener('DOMContentLoaded', adjustContentPadding);
     </script>
- --}}
+</body>
+</html>

@@ -14,59 +14,91 @@ class PageController extends Controller
     public function home()
     {
         try {
-            // Cache courses for 1 hour to improve performance
-            $courses = Cache::remember('frontend_courses', 3600, function () {
-                return Course::with(['teacher', 'company'])
-                    ->where('active_status', 'active') // Only fetch active courses
-                    ->take(3)
-                    ->get()
-                    ->map(function ($course) {
-                        // Initialize with original price
-                        $course->duration_days = $this->calculateDuration($course);
-                        $course->original_price_npr = $course->price;
-                        $course->discounted_price_npr = $course->price; // Default to original price
-                        $course->available_seats = $course->total_seats - $course->enrolled_seats;
+            // Bypass cache for debugging
+            Cache::forget('frontend_courses');
 
-                        // Calculate discount only if active (already ensured by where clause)
-                        if ($course->active_status === 'active') {
-                            $discountPercentage = $this->calculateDiscount($course);
-                            $course->discounted_price_npr = $course->original_price_npr * (1 - $discountPercentage / 100);
-                        }
+            $courses = Course::with([
+                'teacher' => fn($query) => $query->withDefault(),
+                'company' => fn($query) => $query->withDefault()
+            ])
+                ->where('active_status', 'active')
+                ->orderBy('id') // Ensure consistent ordering
+                ->take(3)
+                ->get()
+                ->map(function ($course) {
+                    $course->duration_days = $this->calculateDuration($course);
+                    $course->original_price_npr = $course->price ?? 0;
+                    $course->discounted_price_npr = $course->price ?? 0;
+                    $course->available_seats = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
+                    $course->rating = $course->rating ?? 'N/A';
+                    $course->syllabus = $course->syllabus ?? 'No description available';
+                    $course->photo = $course->photo ?? 'default.jpg';
 
-                        return $course;
-                    });
-            });
+                    if ($course->active_status === 'active') {
+                        $discountPercentage = $this->calculateDiscount($course);
+                        $course->discounted_price_npr = $course->original_price_npr * (1 - $discountPercentage / 100);
+                    }
 
-            // Cache teachers for 1 hour
+                    return $course;
+                });
+
+            // Log detailed course data at current time (05:20 PM +0545, August 29, 2025)
+            $currentTime = Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T');
+            Log::info('Courses fetched for home page at ' . $currentTime, [
+                'count' => $courses->count(),
+                'course_ids' => $courses->pluck('id')->toArray(),
+                'titles' => $courses->pluck('title')->toArray(),
+                'details' => $courses->map(function ($course) {
+                    return [
+                        'id' => $course->id,
+                        'price' => $course->price,
+                        'total_seats' => $course->total_seats,
+                        'enrolled_seats' => $course->enrolled_seats,
+                        'start_date' => $course->start_date,
+                        'teacher_id' => $course->teacher_id,
+                        'company_id' => $course->company_id,
+                    ];
+                })->all(),
+            ]);
+
             $teachers = Cache::remember('frontend_teachers', 3600, fn () => Teacher::all());
 
             return view('frontend.home', compact('courses', 'teachers'));
         } catch (\Exception $e) {
-            Log::error('Error in PageController@home: ' . $e->getMessage());
+            Log::error('Error in PageController@home: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'courses_count' => isset($courses) ? $courses->count() : 0,
+                'time' => Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T'),
+            ]);
             return redirect()->back()->with('error', 'An error occurred while loading the page. Please try again later.');
         }
     }
 
-    /**
-     * Calculate the duration in days between start_date and end_date (or now if end_date is null).
-     */
     private function calculateDuration($course)
     {
-        $start = Carbon::parse($course->start_date);
-        $end = $course->end_date ? Carbon::parse($course->end_date) : Carbon::now();
-        return $start->diffInDays($end);
+        try {
+            $start = $course->start_date ? Carbon::parse($course->start_date) : Carbon::now();
+            $end = $course->end_date ? Carbon::parse($course->end_date) : Carbon::now();
+            return $start->diffInDays($end);
+        } catch (\Exception $e) {
+            Log::warning('Invalid date for course ID ' . ($course->id ?? 'unknown') . ': ' . $e->getMessage());
+            return 0;
+        }
     }
 
-    /**
-     * Calculate the discount percentage if the discount period is valid.
-     */
     private function calculateDiscount($course)
     {
         $discountPercentage = 0;
         if ($course->discount_valid_from && $course->discount_valid_to) {
-            $now = Carbon::now();
-            if ($now->between(Carbon::parse($course->discount_valid_from), Carbon::parse($course->discount_valid_to))) {
-                $discountPercentage = $course->discount_percentage ?? 0;
+            try {
+                $now = Carbon::now()->setTimezone('Asia/Kathmandu');
+                $from = Carbon::parse($course->discount_valid_from);
+                $to = Carbon::parse($course->discount_valid_to);
+                if ($now->between($from, $to)) {
+                    $discountPercentage = $course->discount_percentage ?? 0;
+                }
+            } catch (\Exception $e) {
+                Log::warning('Invalid discount dates for course ID ' . ($course->id ?? 'unknown') . ': ' . $e->getMessage());
             }
         }
         return $discountPercentage;

@@ -39,7 +39,7 @@
       <div class="flex items-center">
         <div class="flex-shrink-0">
           <a href="#">
-          <img class="h-8 sm:h-10 w-auto" src="{{ Storage::url($company->logo) }}" alt="EduLearn Logo">
+            <img class="h-8 sm:h-10 w-auto" src="{{ Storage::url($company->logo) }}" alt="EduLearn Logo">
           </a>
         </div>
         <!-- Desktop Menu -->
@@ -75,7 +75,7 @@
   </div>
 
   <!-- ✅ Mobile Menu -->
-  <div id="mobile-menu" class="hidden lg:hidden bg-white shadow-md px-4 py-4 space-y-3 overflow-hidden transition-max-height duration-300 ease-in-out" style="max-height: 0;">
+  <div id="mobile-menu" class="lg:hidden bg-white shadow-md px-4 py-4 space-y-3 overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0;">
     <a href="{{ route('home') }}" class="nav-link block">Home</a>
     <a href="#testimonials" class="nav-link block">Testimonials</a>
     <a href="#mentors" class="nav-link block">Mentors</a>
@@ -91,7 +91,6 @@
   </div>
 </nav>
 
-
 <!-- ✅ Styles -->
 <style>
   .nav-link {
@@ -101,17 +100,25 @@
     @apply border-b-2 border-yellow-500 text-primary font-semibold;
   }
   #mobile-menu.open {
-    max-height: 300px; /* Adjust based on content height */
+    max-height: 500px; /* Increased to accommodate more content */
   }
   body {
     padding-top: 100px; /* Adjust based on navbar + top bar height */
   }
-  /* Match button color for consistency */
-  .bg-secondary {
-    background-color: #F59E0B; /* Orange from the image */
+  .bg-primary {
+    background-color: #1E3A8A; /* Blue for top bar */
   }
-  .hover:bg-opacity-90:hover {
-    background-color: #F59E0B; /* Darker shade on hover */
+  .bg-secondary {
+    background-color: #F59E0B; /* Orange for buttons */
+  }
+  .text-primary {
+    color: #1E3A8A; /* Blue for text */
+  }
+  .hover\:text-secondary:hover {
+    color: #F59E0B; /* Orange on hover */
+  }
+  .hover\:bg-opacity-90:hover {
+    background-color: #D97706; /* Darker orange on hover */
   }
 </style>
 
@@ -121,8 +128,15 @@
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
 
+    // ✅ Check if elements exist
+    if (!mobileMenuButton || !mobileMenu) {
+      console.error('Mobile menu button or menu not found');
+      return;
+    }
+
     // ✅ Toggle Menu (open/close)
     mobileMenuButton.addEventListener('click', () => {
+      console.log('Mobile menu button clicked'); // Debug log
       if (mobileMenu.classList.contains('open')) {
         mobileMenu.classList.remove('open');
         mobileMenu.style.maxHeight = '0';
