@@ -12,11 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('courses', function (Blueprint $table) {
-           $table->id();
+          $table->id();
             $table->string('title', 100)->notNullable();
             $table->foreignId('teacher_id')->constrained('teachers')->onDelete('restrict');
             $table->foreignId('company_id')->constrained('companies')->onDelete('restrict');
-            $table->foreignId('discount_id')->nullable()->constrained('discounts')->onDelete('set null');
+            $table->decimal('discount_percentage', 5, 2)->default(0.00)->check('discount_percentage >= 0 and discount_percentage <= 100'); // New: Discount percentage
+            $table->date('discount_valid_from')->nullable(); // New: Start date for discount validity
+            $table->date('discount_valid_to')->nullable(); // New: End date for discount validity
             $table->date('start_date')->notNullable();
             $table->date('end_date')->nullable();
             $table->decimal('price', 10, 2)->notNullable()->check('price >= 0');
@@ -25,14 +27,13 @@ return new class extends Migration
             $table->time('daily_time')->nullable();
             $table->text('syllabus')->nullable();
             $table->string('photo', 50)->nullable();
-            $table->enum('active_status', ['active', 'no'])->default('active');
+            $table->enum('active_status', ['active', 'inactive'])->default('inactive');
             $table->decimal('rating', 3, 1)->default(0.0)->check('rating between 0 and 10');
             $table->string('slug', 100)->unique();
             $table->timestamps();
 
             $table->index('teacher_id');
             $table->index('company_id');
-            $table->index('discount_id');
             $table->index('start_date');
         });
     }

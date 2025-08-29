@@ -17,8 +17,5 @@ class Discount extends Model
         'is_active' => 'boolean',
     ];
 
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
-    }
+  
 }

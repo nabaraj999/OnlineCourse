@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,20 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 class Course extends Model
 {
     protected $fillable = [
-        'title', 'teacher_id', 'company_id', 'discount_id', 'start_date', 'end_date', 'price',
-        'total_seats', 'enrolled_seats', 'daily_time', 'syllabus', 'photo',
+        'title', 'teacher_id', 'company_id', 'discount_percentage', 'discount_valid_from', 'discount_valid_to',
+        'start_date', 'end_date', 'price', 'total_seats', 'enrolled_seats', 'daily_time', 'syllabus', 'photo',
         'active_status', 'rating', 'slug'
     ];
 
-    protected $casts = [
-        'start_date' => 'date',
-        'end_date' => 'date',
-        'daily_time' => 'datetime:time',
-        'price' => 'string',
-        'rating' => 'string',
-        'total_seats' => 'integer',
-        'enrolled_seats' => 'integer',
-        'active_status' => 'boolean',
+     protected $casts = [
+        'photo' => 'string', // Ensure photo is stored as a string (path)
     ];
 
     public function teacher()
@@ -32,10 +24,4 @@ class Course extends Model
     {
         return $this->belongsTo(Company::class);
     }
-
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
-    }
-
 }

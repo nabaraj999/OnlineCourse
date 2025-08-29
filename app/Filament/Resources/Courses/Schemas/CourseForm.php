@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources\Courses\Schemas;
 
-use App\Models\Teacher;
-use App\Models\Company;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -20,104 +18,122 @@ class CourseForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->label('Course Title')
                     ->required()
                     ->maxLength(100)
-                    ->placeholder('Enter course title')
-                    ->helperText('Maximum 100 characters'),
-
+                    ->placeholder('Enter the course title')
+                    ->columnSpan(2)
+                    ->helperText('Maximum 100 characters')
+                    ->autofocus()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $set('slug', str()->slug($state));
+                    }),
                 Select::make('teacher_id')
-                    ->relationship('teacher', 'name') // Assumes Teacher model has a 'name' column
+                    ->label('Teacher')
+                    ->relationship('teacher', 'name')
                     ->required()
                     ->searchable()
-                    ->preload()
-                    ->helperText('Select the course teacher'),
-
+                    ->placeholder('Select a teacher'),
                 Select::make('company_id')
-                    ->relationship('company', 'name') // Assumes Company model has a 'name' column
+                    ->label('Company')
+                    ->relationship('company', 'name')
                     ->required()
                     ->searchable()
-                    ->preload()
-                    ->helperText('Select the associated company'),
-
-                Select::make('discount_id')
-                    ->relationship('discount', 'value') // Assumes Discount model has a 'value' column
-                    ->nullable()
-                    ->searchable()
-                    ->preload()
-                    ->helperText('Select a discount (optional)'),
-
-                DatePicker::make('start_date')
-                    ->required()
-                    ->maxDate(now()->addYear())
-                    ->displayFormat('Y-m-d')
-                    ->helperText('Select the course start date'),
-
-                DatePicker::make('end_date')
-                    ->maxDate(now()->addYears(2))
-                    ->displayFormat('Y-m-d')
-                    ->helperText('Optional end date for the course'),
-
-                TextInput::make('price')
+                    ->placeholder('Select a company'),
+                TextInput::make('discount_percentage')
+                    ->label('Discount (%)')
                     ->required()
                     ->numeric()
+                    ->default(0.0)
                     ->minValue(0)
-                    ->maxValue(99999.99)
-                    ->prefix('$')
-                    ->helperText('Enter the course price (max $99,999.99)'),
-
+                    ->maxValue(100)
+                    ->step(0.1)
+                    ->suffix('%')
+                    ->placeholder('Enter discount percentage'),
+                DatePicker::make('discount_valid_from')
+                    ->label('Discount Valid From')
+                    ->nullable(),
+                DatePicker::make('discount_valid_to')
+                    ->label('Discount Valid To')
+                    ->nullable(),
+                DatePicker::make('start_date')
+                    ->label('Course Start Date')
+                    ->required()
+                    ->displayFormat('d M Y'),
+                DatePicker::make('end_date')
+                    ->label('Course End Date')
+                    ->required()
+                    ->displayFormat('d M Y'),
+                TextInput::make('price')
+                    ->label('Price (NPR)')
+                    ->required()
+                    ->numeric()
+                    ->prefix('NPR ')
+                    ->step(0.01)
+                    ->placeholder('Enter price in NPR')
+                    ->rules(['regex:/^\d{1,10}(\.\d{1,2})?$/']),
                 TextInput::make('total_seats')
+                    ->label('Total Seats')
                     ->required()
                     ->numeric()
                     ->minValue(1)
-                    ->maxValue(1000)
-                    ->helperText('Total available seats (max 1000)'),
-
+                    ->placeholder('Enter total available seats'),
                 TextInput::make('enrolled_seats')
+                    ->label('Enrolled Seats')
                     ->required()
                     ->numeric()
-                    ->minValue(0)
-                    ->maxValue(fn ($get) => $get('total_seats') ?? 1000)
                     ->default(0)
-                    ->helperText('Number of enrolled students (cannot exceed total seats)'),
+                    ->maxValue(fn($get) => $get('total_seats'))
+                    ->placeholder('Enter enrolled seats'),
 
                 TimePicker::make('daily_time')
-                    ->helperText('Set the daily schedule time (optional)'),
-
-                RichEditor::make('syllabus')
+                    ->label('Daily Time')
                     ->nullable()
-                    ->maxLength(10000)
-                    ->columnSpanFull()
-                    ->helperText('Enter the course syllabus (max 10,000 characters)'),
+                    ->seconds(false)
+                    ->displayFormat('h:i A'),
 
+              Textarea::make('syllabus')
+                            ->label('Syllabus')
+                            ->nullable()
+                            ->columnSpanFull()
+                            ->rows(4)
+                            ->placeholder('Describe the course syllabus')
+                            ->helperText('Provide a detailed overview of the course content'),
                 FileUpload::make('photo')
+                    ->label('Course Photo')
                     ->nullable()
+                    ->directory('company-logos')
+                    ->disk('public')
+                    ->preserveFilenames()
+                        ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
                     ->image()
-                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/svg+xml'])
-                    ->maxSize(2048)
-                    ->directory('course-photos')
-                     ->disk('public')
-                    ->helperText('Upload a course photo (max 2MB, PNG/JPEG/SVG)'),
-
+                    ->maxSize(2048) // 2MB max
+                    ->helperText('Upload an image (max 2MB). Recommended size: 800x600px.')
+                    ->columnSpan(2),
                 Select::make('active_status')
-                    ->options(['active' => 'Active', 'no' => 'No'])
-                    ->default('active')
+                    ->label('Status')
+                    ->options(['active' => 'Active', 'inactive' => 'Inactive'])
+                    ->default('inactive')
                     ->required()
-                    ->helperText('Set the course status'),
-
+                    ->columnSpan(1),
                 TextInput::make('rating')
+                    ->label('Rating')
                     ->required()
                     ->numeric()
+                    ->default(0.0)
                     ->minValue(0)
                     ->maxValue(10)
-                    ->default(0.0)
                     ->step(0.1)
-                    ->helperText('Enter rating between 0.0 and 10.0'),
-
+                    ->suffix('/10')
+                    ->placeholder('Enter course rating'),
                 TextInput::make('slug')
+                    ->label('Slug')
                     ->required()
-                    ->maxLength(100)
                     ->unique(ignoreRecord: true)
-                    ->helperText('Unique URL slug for the course (max 100 characters)'),
+                    ->maxLength(100)
+
+                    ->helperText('Automatically generated from title'),
             ]);
     }
 }
