@@ -378,7 +378,7 @@
             <p class="mt-4 text-lg max-w-3xl mx-auto">Our team is ready to answer your questions and help you start
                 your learning journey</p>
             <div class="mt-8">
-                <a href="#"
+                <a href="{{ route('contact.create') }}"
                     class="inline-block bg-secondary hover:bg-opacity-90 text-white px-8 py-3 rounded-lg font-medium transition duration-300 shadow-md transform hover:-translate-y-1">Contact
                     Us</a>
             </div>

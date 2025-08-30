@@ -51,7 +51,7 @@
                     <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300 text-sm sm:text-base py-1 px-2">Help Center</a></li>
                     <li><a href="{{ route('terms_conditions') }}" class="text-gray-400 hover:text-secondary transition duration-300 text-sm sm:text-base py-1 px-2">Terms of Service</a></li>
                     <li><a href="{{ route('privacy_policy') }}" class="text-gray-400 hover:text-secondary transition duration-300 text-sm sm:text-base py-1 px-2">Privacy Policy</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-secondary transition duration-300 text-sm sm:text-base py-1 px-2">Contact</a></li>
+                    <li><a href="{{ route('contact.create') }}" class="text-gray-400 hover:text-secondary transition duration-300 text-sm sm:text-base py-1 px-2">Contact</a></li>
                 </ul>
             </div>
 
