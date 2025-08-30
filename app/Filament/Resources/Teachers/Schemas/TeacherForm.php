@@ -49,8 +49,6 @@ class TeacherForm
                     ->default(null)
                     ->columnSpanFull(),
 
-                
-
                Select::make('account_status')
                     ->label('Account Status')
                     ->required()

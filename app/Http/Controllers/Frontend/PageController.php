@@ -42,7 +42,7 @@ class PageController extends Controller
                     return $course;
                 });
 
-            // Log detailed course data at current time (05:20 PM +0545, August 29, 2025)
+            // Log detailed course data at current time
             $currentTime = Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T');
             Log::info('Courses fetched for home page at ' . $currentTime, [
                 'count' => $courses->count(),
@@ -61,7 +61,8 @@ class PageController extends Controller
                 })->all(),
             ]);
 
-            $teachers = Cache::remember('frontend_teachers', 3600, fn () => Teacher::all());
+            // Fetch only active teachers and cache the result
+            $teachers = Cache::remember('frontend_teachers', 3600, fn () => Teacher::where('account_status', 'active')->get());
 
             return view('frontend.home', compact('courses', 'teachers'));
         } catch (\Exception $e) {

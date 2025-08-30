@@ -97,11 +97,14 @@
 
    <section id="courses" class="py-16 bg-primary bg-opacity-5">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center">
-            <h2 class="text-3xl font-bold text-gray-900">Popular Courses</h2>
-            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Discover our most popular courses designed to help you achieve your career goals</p>
-            {{-- <p class="mt-2 text-sm text-gray-500">Debug: {{ $courses->count() }} courses fetched</p> --}}
-        </div>
+       <div class="text-center">
+  <h2 class="text-3xl font-bold text-white">Popular Courses</h2>
+  <p class="mt-4 text-lg text-white max-w-3xl mx-auto">
+    Discover our most popular courses designed to help you achieve your career goals
+  </p>
+  {{-- <p class="mt-2 text-sm text-gray-500">Debug: {{ $courses->count() }} courses fetched</p> --}}
+</div>
+
 
         <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse ($courses as $course)
@@ -138,132 +141,58 @@
     </div>
 </section>
 
-    <!-- Mentors Section -->
-    <section id="mentors" class="py-16 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold">Our Mentors</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Learn from industry experts with years of
-                    experience</p>
-            </div>
-
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <!-- Mentor 1 -->
-                <div
-                    class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
-                    <div class="h-60 bg-primary flex items-center justify-center relative">
-                        <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                            <div class="flex justify-center space-x-4">
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-twitter"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-solid fa-envelope"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="text-xl font-bold">Sarah Johnson</h3>
-                        <p class="text-secondary">Web Development Expert</p>
-                        <p class="mt-2 text-gray-600">10+ years experience at Google and Facebook</p>
-                    </div>
-                </div>
-
-                <!-- Mentor 2 -->
-                <div
-                    class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
-                    <div class="h-60 bg-primary flex items-center justify-center relative">
-                        <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                            <div class="flex justify-center space-x-4">
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-twitter"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-solid fa-envelope"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="text-xl font-bold">Michael Chen</h3>
-                        <p class="text-secondary">Data Scientist</p>
-                        <p class="mt-2 text-gray-600">Lead Data Scientist at Amazon with PhD in Machine Learning</p>
-                    </div>
-                </div>
-
-                <!-- Mentor 3 -->
-                <div
-                    class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
-                    <div class="h-60 bg-primary flex items-center justify-center relative">
-                        <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                            <div class="flex justify-center space-x-4">
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-twitter"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-solid fa-envelope"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="text-xl font-bold">Emma Rodriguez</h3>
-                        <p class="text-secondary">UI/UX Designer</p>
-                        <p class="mt-2 text-gray-600">Award-winning designer with expertise in mobile applications</p>
-                    </div>
-                </div>
-
-                <!-- Mentor 4 -->
-                <div
-                    class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
-                    <div class="h-60 bg-primary flex items-center justify-center relative">
-                        <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
-                            <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
-                        </div>
-                        <div
-                            class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                            <div class="flex justify-center space-x-4">
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-brands fa-twitter"></i></a>
-                                <a href="#" class="text-white hover:text-secondary"><i
-                                        class="fa-solid fa-envelope"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h3 class="text-xl font-bold">David Kim</h3>
-                        <p class="text-secondary">Digital Marketing Expert</p>
-                        <p class="mt-2 text-gray-600">Helped businesses grow revenue by 200%+ with digital strategies
-                        </p>
-                    </div>
-                </div>
-            </div>
+ <section id="mentors" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold">Our Mentors</h2>
+            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Learn from industry experts with years of experience</p>
         </div>
-    </section>
+
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            @forelse ($teachers as $teacher)
+                <div class="bg-light rounded-xl overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-2 group">
+                    <div class="h-60 bg-primary flex items-center justify-center relative">
+                        <div class="w-32 h-32 rounded-full bg-white flex items-center justify-center">
+                            @if ($teacher->logo)
+                                <img src="{{ asset('storage/' . $teacher->logo) }}" alt="{{ $teacher->name }}" class="w-full h-full object-cover rounded-full">
+                            @else
+                                <i class="fa-solid fa-user-tie text-primary text-5xl"></i>
+                            @endif
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-primary bg-opacity-70 text-white p-3 transform translate-y-10 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                            <div class="flex justify-center space-x-4">
+                                @if ($teacher->website)
+                                    <a href="{{ $teacher->website }}" class="text-white hover:text-secondary" target="_blank">
+                                        <i class="fa-brands fa-linkedin-in"></i>
+                                    </a>
+                                @endif
+                                <a href="#" class="text-white hover:text-secondary"><i class="fa-brands fa-twitter"></i></a>
+                                <a href="mailto:{{ $teacher->email }}" class="text-white hover:text-secondary"><i class="fa-solid fa-envelope"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold">{{ $teacher->name }}</h3>
+                        <p class="text-secondary">{{ $teacher->subject ?? 'Expert' }}</p>
+                        <p class="mt-2 text-gray-600">{{ $teacher->experience ?? 'Experienced Professional' }}</p>
+                    </div>
+                </div>
+            @empty
+                <p class="text-center text-gray-600 col-span-full">No active mentors available at this time.</p>
+            @endforelse
+        </div>
+    </div>
+</section>
 
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-16 bg-primary bg-opacity-5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold">What Our Students Say</h2>
-                <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Hear from our successful students who have
-                    transformed their careers with EduLearn</p>
-            </div>
+           <div class="text-center">
+  <h2 class="text-3xl font-bold text-white">What Our Students Say</h2>
+  <p class="mt-4 text-lg text-white max-w-3xl mx-auto">
+    Hear from our successful students who have transformed their careers with EduLearn
+  </p>
+</div>
 
             <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Testimonial 1 -->
