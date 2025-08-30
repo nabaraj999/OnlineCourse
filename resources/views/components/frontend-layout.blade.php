@@ -7,14 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon) }}" alt="FinHedge Logo"
         class="h-auto w-auto">
- <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://cdn.tailwindcss.com"></script>
-     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"></script>
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
@@ -28,129 +30,148 @@
 
 
 </body>
-  <div id="support-widget">
-        <!-- Floating Button -->
-        <button id="support-button" class="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-primary shadow-2xl flex items-center justify-center text-white text-2xl animate-float z-50">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-            </svg>
-        </button>
 
-        <!-- Modal Overlay -->
-        <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300">
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <!-- Modal Content -->
-                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col animate-fade-in">
-                    <!-- Close Button -->
-                    <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-white rounded-full p-1 shadow-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+<div id="support-widget">
+    <!-- Floating Button -->
+    <button id="support-button"
+        class="fixed bottom-6 right-6 w-16 h-16 rounded-full bg-primary shadow-2xl flex items-center justify-center text-white text-2xl animate-float z-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+    </button>
+
+    <!-- Modal Overlay -->
+    <div id="modal-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <!-- Modal Content -->
+            <div
+                class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col animate-fade-in">
+                <!-- Close Button -->
+                <button id="close-modal"
+                    class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 bg-white rounded-full p-1 shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Tabs -->
+                <div class="flex border-b">
+                    <button id="chat-tab"
+                        class="flex-1 py-4 px-6 text-center font-semibold text-primary border-b-2 border-primary bg-light">
+                        💬 Chat with AI
                     </button>
+                    <button id="ticket-tab" class="flex-1 py-4 px-6 text-center font-semibold text-gray-500">
+                        🎫 Generate Ticket
+                    </button>
+                </div>
 
-                    <!-- Tabs -->
-                    <div class="flex border-b">
-                        <button id="chat-tab" class="flex-1 py-4 px-6 text-center font-semibold text-primary border-b-2 border-primary bg-light">
-                            💬 Chat with AI
-                        </button>
-                        <button id="ticket-tab" class="flex-1 py-4 px-6 text-center font-semibold text-gray-500">
-                            🎫 Generate Ticket
-                        </button>
+                <!-- Tab Content -->
+                <div class="flex-1 overflow-y-auto">
+                    <!-- Chat with AI Tab -->
+                    <div id="chat-content" class="p-4">
+                        <h3 class="text-xl font-bold text-center mb-4">AI Support Assistant 🤖</h3>
+
+                        <!-- Chat Messages -->
+                        <div id="chat-messages" class="space-y-4 mb-4 max-h-80 overflow-y-auto p-2">
+                            <!-- AI Message -->
+                            <div class="flex items-start space-x-2">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">
+                                    🤖</div>
+                                <div class="bg-primary text-white rounded-lg p-3 max-w-xs">
+                                    <p>Hello! I'm your AI assistant. How can I help you with your course today?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input Area -->
+                        <div class="border-t pt-4">
+                            <div class="flex space-x-2">
+                                <textarea id="message-input" class="flex-1 border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary"
+                                    placeholder="Type your question…" rows="2"></textarea>
+                                <button id="send-message"
+                                    class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 self-end">
+                                    <span>Send</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Tab Content -->
-                    <div class="flex-1 overflow-y-auto">
-                        <!-- Chat with AI Tab -->
-                        <div id="chat-content" class="p-4">
-                            <h3 class="text-xl font-bold text-center mb-4">AI Support Assistant 🤖</h3>
+                    <!-- Generate Ticket Tab -->
+                    <div id="ticket-content" class="p-4 hidden">
+                        <h3 class="text-xl font-bold text-center mb-6">Create Support Ticket 🎫</h3>
 
-                            <!-- Chat Messages -->
-                            <div id="chat-messages" class="space-y-4 mb-4 max-h-80 overflow-y-auto p-2">
-                                <!-- AI Message -->
-                                <div class="flex items-start space-x-2">
-                                    <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white">🤖</div>
-                                    <div class="bg-primary text-white rounded-lg p-3 max-w-xs">
-                                        <p>Hello! I'm your AI assistant. How can I help you with your course today?</p>
+                        <!-- Ticket Form -->
+                        <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <div class="grid grid-cols-1 gap-4">
+                                <!-- Full Name -->
+                                <div class="relative">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-user"></i>
                                     </div>
+                                    <input type="text" name="name"
+                                        class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                                        placeholder="Full Name" required>
+                                </div>
+
+                                <!-- Email Address -->
+                                <div class="relative">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <input type="email" name="email"
+                                        class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                                        placeholder="Email Address" required>
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="relative">
+                                    <div
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <input type="tel" name="phone"
+                                        class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                                        placeholder="Phone Number">
+                                </div>
+
+                                <!-- Problem/Issue -->
+                                <div class="relative">
+                                    <div class="absolute top-3 left-3 text-gray-400 pointer-events-none">
+                                        <i class="fas fa-comment-dots"></i>
+                                    </div>
+                                    <textarea name="issue" rows="4"
+                                        class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                                        placeholder="Describe your problem/issue" required></textarea>
                                 </div>
                             </div>
 
-                            <!-- Input Area -->
-                            <div class="border-t pt-4">
-                                <div class="flex space-x-2">
-                                    <textarea id="message-input" class="flex-1 border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Type your question…" rows="2"></textarea>
-                                    <button id="send-message" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg flex items-center gap-2 self-end">
-                                        <span>Send</span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                            <!-- Submit Button -->
+                            <button type="submit"
+                                class="w-full bg-secondary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:scale-105 hover:bg-opacity-90 transition transform duration-200 flex items-center justify-center gap-2">
+                                <i class="fas fa-paper-plane"></i> Submit Ticket
+                            </button>
+                        </form>
 
-                        <!-- Generate Ticket Tab -->
-                        <div id="ticket-content" class="p-4 hidden">
-                            <h3 class="text-xl font-bold text-center mb-6">Create Support Ticket 🎫</h3>
-
-                            <!-- Ticket Form -->
-                            <form id="ticket-form" action="{{ route('tickets.store') }}" method="POST" class="space-y-4">
-    @csrf
-    <div class="grid grid-cols-1 gap-4">
-        <!-- Full Name -->
-        <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <i class="fas fa-user"></i>
-            </div>
-            <input type="text" name="name"
-                   class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-                   placeholder="Full Name" required>
-        </div>
-
-        <!-- Email Address -->
-        <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <i class="fas fa-envelope"></i>
-            </div>
-            <input type="email" name="email"
-                   class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-                   placeholder="Email Address" required>
-        </div>
-
-        <!-- Phone Number -->
-        <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                <i class="fas fa-phone"></i>
-            </div>
-            <input type="tel" name="phone"
-                   class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-                   placeholder="Phone Number">
-        </div>
-
-        <!-- Problem/Issue -->
-        <div class="relative">
-            <div class="absolute top-3 left-3 text-gray-400 pointer-events-none">
-                <i class="fas fa-comment-dots"></i>
-            </div>
-            <textarea name="issue" rows="4"
-                      class="pl-10 w-full border rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
-                      placeholder="Describe your problem/issue" required></textarea>
-        </div>
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit"
-            class="w-full bg-secondary text-white font-bold px-6 py-3 rounded-xl shadow-md hover:scale-105 hover:bg-opacity-90 transition transform duration-200 flex items-center justify-center gap-2">
-        <i class="fas fa-paper-plane"></i> Submit Ticket
-    </button>
-</form>
-
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 <script>
@@ -171,12 +192,20 @@
                 },
                 keyframes: {
                     float: {
-                        '0%, 100%': { transform: 'translateY(0)' },
-                        '50%': { transform: 'translateY(-20px)' }
+                        '0%, 100%': {
+                            transform: 'translateY(0)'
+                        },
+                        '50%': {
+                            transform: 'translateY(-20px)'
+                        }
                     },
                     fadeIn: {
-                        '0%': { opacity: '0' },
-                        '100%': { opacity: '1' }
+                        '0%': {
+                            opacity: '0'
+                        },
+                        '100%': {
+                            opacity: '1'
+                        }
                     }
                 }
             }
@@ -246,14 +275,21 @@
                 messageInput.value = '';
 
                 setTimeout(() => {
-                    let response = "I'm sorry, I didn't understand that. Can you please provide more details?";
+                    let response =
+                        "I'm sorry, I didn't understand that. Can you please provide more details?";
 
-                    if (message.toLowerCase().includes('access') || message.toLowerCase().includes('material')) {
-                        response = "For access issues, please try clearing your browser cache or using a different browser. If the problem persists, contact technical support.";
-                    } else if (message.toLowerCase().includes('video') || message.toLowerCase().includes('play')) {
-                        response = "Video playback issues are often related to internet connection. Try lowering the video quality or downloading the video for offline viewing.";
-                    } else if (message.toLowerCase().includes('certificate') || message.toLowerCase().includes('complete')) {
-                        response = "Certificates are automatically generated when you complete all course requirements. Please allow up to 24 hours for certificate generation after completion.";
+                    if (message.toLowerCase().includes('access') || message.toLowerCase()
+                        .includes('material')) {
+                        response =
+                            "For access issues, please try clearing your browser cache or using a different browser. If the problem persists, contact technical support.";
+                    } else if (message.toLowerCase().includes('video') || message.toLowerCase()
+                        .includes('play')) {
+                        response =
+                            "Video playback issues are often related to internet connection. Try lowering the video quality or downloading the video for offline viewing.";
+                    } else if (message.toLowerCase().includes('certificate') || message
+                        .toLowerCase().includes('complete')) {
+                        response =
+                            "Certificates are automatically generated when you complete all course requirements. Please allow up to 24 hours for certificate generation after completion.";
                     }
 
                     addMessage(response, 'ai');
@@ -302,7 +338,8 @@
                     const errorText = await response.text();
                     let errorMessage = `HTTP error! status: ${response.status}`;
                     if (response.status === 419) {
-                        errorMessage += ' - Possible CSRF token mismatch. Refresh the page and try again.';
+                        errorMessage +=
+                            ' - Possible CSRF token mismatch. Refresh the page and try again.';
                     } else if (response.status === 422) {
                         errorMessage += ' - Validation error: ' + errorText;
                     } else if (response.status === 500) {
@@ -320,7 +357,8 @@
                 chatTab.click();
             } catch (error) {
                 console.error('Ticket submission error:', error);
-                alert(`Failed to submit ticket. Error: ${error.message}. Check the console for details.`);
+                alert(
+                    `Failed to submit ticket. Error: ${error.message}. Check the console for details.`);
             }
         });
 
@@ -353,7 +391,8 @@
         // Function to show success notification
         function showSuccessNotification(message) {
             const notification = document.createElement('div');
-            notification.classList.add('fixed', 'bottom-6', 'right-6', 'bg-green-500', 'text-white', 'px-4', 'py-2', 'rounded-lg', 'shadow-lg', 'transition-opacity', 'duration-300', 'z-50');
+            notification.classList.add('fixed', 'bottom-6', 'right-6', 'bg-green-500', 'text-white', 'px-4',
+                'py-2', 'rounded-lg', 'shadow-lg', 'transition-opacity', 'duration-300', 'z-50');
             notification.textContent = message;
             document.body.appendChild(notification);
 
@@ -373,6 +412,7 @@
         .animation-delay-2000 {
             animation-delay: 2s;
         }
+
         .animation-delay-4000 {
             animation-delay: 4s;
         }
@@ -381,9 +421,11 @@
         .nav-link {
             @apply text-gray-700 border-b-2 border-transparent transition duration-300;
         }
+
         .nav-link:hover {
             @apply text-secondary border-secondary font-semibold;
         }
+
         .nav-link-active {
             @apply text-primary font-semibold border-b-2 border-secondary;
         }

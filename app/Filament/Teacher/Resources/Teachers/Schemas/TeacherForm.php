@@ -32,6 +32,7 @@ class TeacherForm
                 ->label('Profile Picture')
                 ->image()
                 ->directory('teacher-profiles')
+                ->disk('public')
                 ->maxSize(2048)
                 ->imageEditor()
                 ->imageCropAspectRatio('1:1')

@@ -62,7 +62,7 @@ class PageController extends Controller
             ]);
 
             // Fetch only active teachers and cache the result
-            $teachers = Cache::remember('frontend_teachers', 3600, fn () => Teacher::where('account_status', 'active')->get());
+            $teachers = Cache::remember('frontend_teachers', 360, fn () => Teacher::where('account_status', 'active')->get());
 
             return view('frontend.home', compact('courses', 'teachers'));
         } catch (\Exception $e) {
