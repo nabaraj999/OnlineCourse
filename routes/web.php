@@ -6,6 +6,7 @@ use App\Http\Controllers\PrivacyPolicyeController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\MentorController;
 
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::post('/', [TicketController::class, 'store'])->name('tickets.store');
@@ -15,3 +16,4 @@ Route::get('/privacy-policy', [PrivacyPolicyeController::class, 'show'])->name('
 
 Route::get('/contact', [ContactController::class, 'create'])->name('contact.create');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/mentors', [MentorController::class, 'index'])->name('mentors.index');

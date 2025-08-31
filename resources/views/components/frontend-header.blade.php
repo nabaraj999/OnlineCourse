@@ -51,7 +51,7 @@
         <div class="hidden lg:ml-10 lg:flex lg:space-x-8">
           <a href="{{ route('home') }}" class="nav-link">Home</a>
           <a href="#testimonials" class="nav-link">Testimonials</a>
-          <a href="#mentors" class="nav-link">Mentors</a>
+          <a href="{{ route('mentors.index') }}" class="nav-link">Mentors</a>
           <a href="#blog" class="nav-link">Blog</a>
           <a href="#courses" class="nav-link">Courses</a>
         </div>
