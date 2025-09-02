@@ -125,10 +125,7 @@
         /* Matches navbar + top bar height */
     }
 
-    .bg-primary {
-        background-color: #1E3A8A;
-        /* Blue */
-    }
+    
 
     .bg-secondary {
         background-color: #F59E0B;

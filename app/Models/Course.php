@@ -13,6 +13,7 @@ class Course extends Model
 
      protected $casts = [
         'photo' => 'string', // Ensure photo is stored as a string (path)
+        'syllabus' => 'array', // Cast syllabus to array for easier handling
     ];
 
     public function teacher()

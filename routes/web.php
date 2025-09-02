@@ -19,3 +19,4 @@ Route::get('/contact', [ContactController::class, 'create'])->name('contact.crea
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/mentors', [MentorController::class, 'index'])->name('mentors.index');
 Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
+Route::get('/courses/{id}', [CoursesController::class, 'show'])->name('courses.show');

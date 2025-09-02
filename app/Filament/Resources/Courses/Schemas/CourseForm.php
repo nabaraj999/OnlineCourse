@@ -93,13 +93,13 @@ class CourseForm
                     ->seconds(false)
                     ->displayFormat('h:i A'),
 
-              Textarea::make('syllabus')
-                            ->label('Syllabus')
-                            ->nullable()
-                            ->columnSpanFull()
-                            ->rows(4)
-                            ->placeholder('Describe the course syllabus')
-                            ->helperText('Provide a detailed overview of the course content'),
+            RichEditor::make('syllabus')
+    ->label('Syllabus')
+    ->nullable()
+    ->columnSpanFull()
+    ->placeholder('Describe the course syllabus')
+    ->helperText('Provide a detailed overview of the course content')
+    ->extraAttributes(['style' => 'min-height: 200px;']),
                 FileUpload::make('photo')
                     ->label('Course Photo')
                     ->nullable()

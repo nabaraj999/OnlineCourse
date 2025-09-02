@@ -70,6 +70,53 @@ class CoursesController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        try {
+            $course = Course::with([
+                'teacher' => fn($query) => $query->withDefault(),
+                'company' => fn($query) => $query->withDefault()
+            ])
+                ->where('active_status', 'active')
+                ->findOrFail($id);
+
+            $course->duration_days = $this->calculateDuration($course);
+            $course->original_price_npr = $course->price ?? 0;
+            $course->discounted_price_npr = $course->price ?? 0;
+            $course->available_seats = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
+            $course->rating = $course->rating ?? 'N/A';
+            $course->syllabus = $course->syllabus ?? 'No description available';
+            $course->photo = $course->photo ?? 'default.jpg';
+
+            if ($course->active_status === 'active') {
+                $discountPercentage = $this->calculateDiscount($course);
+                $course->discounted_price_npr = $course->original_price_npr * (1 - $discountPercentage / 100);
+            }
+
+            // Log course details
+            $currentTime = Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T');
+            Log::info('Course details fetched at ' . $currentTime, [
+                'course_id' => $course->id,
+                'title' => $course->title,
+                'price' => $course->price,
+                'total_seats' => $course->total_seats,
+                'enrolled_seats' => $course->enrolled_seats,
+                'start_date' => $course->start_date,
+                'teacher_id' => $course->teacher_id,
+                'company_id' => $course->company_id,
+            ]);
+
+            return view('frontend.courses-show', compact('course'));
+        } catch (\Exception $e) {
+            Log::error('Error in CoursesController@show: ' . $e->getMessage(), [
+                'course_id' => $id,
+                'trace' => $e->getTraceAsString(),
+                'time' => Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T'),
+            ]);
+            return redirect()->route('courses.index')->with('error', 'Course not found or an error occurred.');
+        }
+    }
+
     private function calculateDuration($course)
     {
         try {
