@@ -358,7 +358,8 @@
             } catch (error) {
                 console.error('Ticket submission error:', error);
                 alert(
-                    `Failed to submit ticket. Error: ${error.message}. Check the console for details.`);
+                    `Failed to submit ticket. Error: ${error.message}. Check the console for details.`
+                    );
             }
         });
 

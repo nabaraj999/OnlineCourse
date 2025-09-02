@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,13 +11,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
         /* Apply Raleway font globally, excluding Font Awesome classes */
-        html, body, *:not(.fa, .fa-solid, .fa-regular, .fa-brands) {
+        html,
+        body,
+        *:not(.fa, .fa-solid, .fa-regular, .fa-brands) {
             font-family: 'Raleway', sans-serif !important;
         }
     </style>
     <!-- Tailwind CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body>
     <x-frontend-layout />
 
@@ -95,125 +99,146 @@
         </div>
     </div>
 
-   <section id="courses" class="py-16 bg-primary bg-opacity-5">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-       <div class="text-center">
-  <h2 class="text-3xl font-bold text-white">Popular Courses</h2>
-  <p class="mt-4 text-lg text-white max-w-3xl mx-auto">
-    Discover our most popular courses designed to help you achieve your career goals
-  </p>
-  {{-- <p class="mt-2 text-sm text-gray-500">Debug: {{ $courses->count() }} courses fetched</p> --}}
-</div>
+    <section id="courses" class="py-16 bg-primary bg-opacity-5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-white">Popular Courses</h2>
+                <p class="mt-4 text-lg text-white max-w-3xl mx-auto">
+                    Discover our most popular courses designed to help you achieve your career goals
+                </p>
+                {{-- <p class="mt-2 text-sm text-gray-500">Debug: {{ $courses->count() }} courses fetched</p> --}}
+            </div>
 
 
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @forelse ($courses as $course)
-                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
-                    <img src="{{ Storage::url($course->photo) }}" alt="{{ $course->title }}" class="w-full h-48 object-cover bg-gray-200" onerror="this.src='/images/placeholder.jpg';">
-                    <div class="p-5">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-blue-800">{{ $course->rating }} ★</span>
-                            <span class="text-lg font-semibold text-green-600">NPR {{ number_format($course->discounted_price_npr, 2) }}</span>
-                            @if ($course->active_status === 'active' && $course->discount_percentage > 0 && Carbon\Carbon::now()->setTimezone('Asia/Kathmandu')->between(Carbon\Carbon::parse($course->discount_valid_from), Carbon\Carbon::parse($course->discount_valid_to)))
-                                <span class="text-sm font-medium text-gray-500 line-through">NPR {{ number_format($course->original_price_npr, 2) }}</span>
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse ($courses as $course)
+                    <div
+                        class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                        <img src="{{ Storage::url($course->photo) }}" alt="{{ $course->title }}"
+                            class="w-full h-48 object-cover bg-gray-200" onerror="this.src='/images/placeholder.jpg';">
+                        <div class="p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <span
+                                    class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary-100 text-blue-800">{{ $course->rating }}
+                                    ★</span>
+                                <span class="text-lg font-semibold text-green-600">NPR
+                                    {{ number_format($course->discounted_price_npr, 2) }}</span>
+                                @if (
+                                    $course->active_status === 'active' &&
+                                        $course->discount_percentage > 0 &&
+                                        Carbon\Carbon::now()->setTimezone('Asia/Kathmandu')->between(
+                                                Carbon\Carbon::parse($course->discount_valid_from),
+                                                Carbon\Carbon::parse($course->discount_valid_to)))
+                                    <span class="text-sm font-medium text-gray-500 line-through">NPR
+                                        {{ number_format($course->original_price_npr, 2) }}</span>
+                                @endif
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-900 line-clamp-2">{{ $course->title }}</h3>
+                            <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $course->syllabus }}</p>
+                            <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
+                                <span class="flex items-center"><i class="fa-regular fa-clock mr-1"></i>
+                                    {{ $course->duration_days }} days</span>
+                                <span class="flex items-center"><i class="fa-solid fa-chair mr-1"></i>
+                                    {{ $course->available_seats }} seats left</span>
+                            </div>
+                            <a href="#"
+                                class="mt-5 inline-block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition duration-300">Enroll
+                                Now</a>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center text-gray-600">No active courses available at the moment.</p>
+                @endforelse
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="#"
+                    class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-primary rounded-lg font-medium transition duration-300">
+                    View All Courses
+                    <i class="fa-solid fa-arrow-right ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="mentors" class="py-10 bg-light font-raleway sm:py-16 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Heading -->
+            <div class="text-center">
+                <h2 class="text-2xl font-extrabold text-primary sm:text-3xl md:text-4xl">Meet Our Mentors</h2>
+                <p class="mt-3 text-base text-gray-600 max-w-2xl mx-auto sm:text-lg">
+                    Learn from industry experts with years of proven experience
+                </p>
+            </div>
+
+            <!-- Cards -->
+            <div class="mt-8 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+                @forelse ($teachers as $teacher)
+                    <div
+                        class="relative group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-transform duration-500 sm:hover:-translate-y-3 sm:hover:scale-[1.02] border border-light">
+                        <!-- Full Cover Image -->
+                        <div class="relative h-48 w-full sm:h-56">
+                            @if ($teacher->logo)
+                                <img src="{{ Storage::url($teacher->logo) }}" alt="{{ $teacher->name }}"
+                                    class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full bg-primary flex items-center justify-center">
+                                    <i class="fa-solid fa-user-tie text-white text-5xl sm:text-6xl"></i>
+                                </div>
                             @endif
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 line-clamp-2">{{ $course->title }}</h3>
-                        <p class="mt-2 text-sm text-gray-600 line-clamp-2">{{ $course->syllabus }}</p>
-                        <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
-                            <span class="flex items-center"><i class="fa-regular fa-clock mr-1"></i> {{ $course->duration_days }} days</span>
-                            <span class="flex items-center"><i class="fa-solid fa-chair mr-1"></i> {{ $course->available_seats }} seats left</span>
-                        </div>
-                        <a href="#" class="mt-5 inline-block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition duration-300">Enroll Now</a>
-                    </div>
-                </div>
-            @empty
-                <p class="text-center text-gray-600">No active courses available at the moment.</p>
-            @endforelse
-        </div>
-
-        <div class="mt-12 text-center">
-            <a href="#" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-primary rounded-lg font-medium transition duration-300">
-                View All Courses
-                <i class="fa-solid fa-arrow-right ml-2"></i>
-            </a>
-        </div>
-    </div>
-</section>
-
-
-<section id="mentors" class="py-10 bg-light font-raleway sm:py-16 md:py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Heading -->
-        <div class="text-center">
-            <h2 class="text-2xl font-extrabold text-primary sm:text-3xl md:text-4xl">Meet Our Mentors</h2>
-            <p class="mt-3 text-base text-gray-600 max-w-2xl mx-auto sm:text-lg">
-                Learn from industry experts with years of proven experience
-            </p>
-        </div>
-
-        <!-- Cards -->
-        <div class="mt-8 grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
-            @forelse ($teachers as $teacher)
-                <div class="relative group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-transform duration-500 sm:hover:-translate-y-3 sm:hover:scale-[1.02] border border-light">
-                    <!-- Full Cover Image -->
-                    <div class="relative h-48 w-full sm:h-56">
-                        @if ($teacher->logo)
-                            <img src="{{ Storage::url($teacher->logo) }}" alt="{{ $teacher->name }}"
-                                class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-primary flex items-center justify-center">
-                                <i class="fa-solid fa-user-tie text-white text-5xl sm:text-6xl"></i>
-                            </div>
-                        @endif
-                        <!-- Hover Overlay (Disabled on Mobile) -->
-                        <div class="absolute inset-0 bg-primary bg-opacity-70 flex items-center justify-center opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500">
-                            <div class="flex space-x-4">
-                                <a href="#" class="p-2 rounded-full border-2 border-white text-white hover:bg-secondary hover:border-secondary transition sm:p-3">
-                                    <i class="fa-brands fa-twitter"></i>
-                                </a>
-                                <a href="mailto:{{ $teacher->email }}" class="p-2 rounded-full border-2 border-white text-white hover:bg-secondary hover:border-secondary transition sm:p-3">
-                                    <i class="fa-solid fa-envelope"></i>
-                                </a>
+                            <!-- Hover Overlay (Disabled on Mobile) -->
+                            <div
+                                class="absolute inset-0 bg-primary bg-opacity-70 flex items-center justify-center opacity-0 sm:group-hover:opacity-100 transition-opacity duration-500">
+                                <div class="flex space-x-4">
+                                    <a href="#"
+                                        class="p-2 rounded-full border-2 border-white text-white hover:bg-secondary hover:border-secondary transition sm:p-3">
+                                        <i class="fa-brands fa-twitter"></i>
+                                    </a>
+                                    <a href="mailto:{{ $teacher->email }}"
+                                        class="p-2 rounded-full border-2 border-white text-white hover:bg-secondary hover:border-secondary transition sm:p-3">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Content -->
+                        <div class="p-4 text-center sm:p-6">
+                            <!-- Subject -->
+                            <p class="text-secondary font-semibold uppercase tracking-wide text-xs sm:text-sm">
+                                {{ $teacher->subject ?? 'Expert' }}
+                            </p>
+
+                            <!-- Name -->
+                            <h2 class="text-lg font-bold text-primary sm:text-2xl">
+                                {{ $teacher->name }}
+                            </h2>
+
+                            <!-- Address -->
+                            <p class="text-gray-600 text-xs sm:text-sm">
+                                {{ $teacher->address ?? 'Location not specified' }}
+                            </p>
+
+                            <!-- Experience -->
+                            <p class="text-gray-500 text-xs italic sm:text-sm">
+                                {{ $teacher->experience ?? 'Experienced Professional' }}
+                            </p>
+                        </div>
+
+                        <!-- Bottom Accent -->
+                        <div class="absolute inset-x-0 bottom-0 h-1 bg-secondary"></div>
                     </div>
-
-                    <!-- Content -->
-                    <div class="p-4 text-center sm:p-6">
-                        <!-- Subject -->
-                        <p class="text-secondary font-semibold uppercase tracking-wide text-xs sm:text-sm">
-                            {{ $teacher->subject ?? 'Expert' }}
-                        </p>
-
-                        <!-- Name -->
-                        <h2 class="text-lg font-bold text-primary sm:text-2xl">
-                            {{ $teacher->name }}
-                        </h2>
-
-                        <!-- Address -->
-                        <p class="text-gray-600 text-xs sm:text-sm">
-                            {{ $teacher->address ?? 'Location not specified' }}
-                        </p>
-
-                        <!-- Experience -->
-                        <p class="text-gray-500 text-xs italic sm:text-sm">
-                            {{ $teacher->experience ?? 'Experienced Professional' }}
-                        </p>
-                    </div>
-
-                    <!-- Bottom Accent -->
-                    <div class="absolute inset-x-0 bottom-0 h-1 bg-secondary"></div>
-                </div>
-            @empty
-                <p class="text-center text-gray-600 text-sm col-span-full sm:text-base">No active mentors available at this time.</p>
-            @endforelse
+                @empty
+                    <p class="text-center text-gray-600 text-sm col-span-full sm:text-base">No active mentors available
+                        at this time.</p>
+                @endforelse
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
 
-{{--
+    {{--
     <!-- Testimonials Section -->
     <section id="testimonials" class="py-16 bg-primary bg-opacity-5">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -414,4 +439,5 @@
     </script>
 </body>
 <x-frontend-footer />
+
 </html>
