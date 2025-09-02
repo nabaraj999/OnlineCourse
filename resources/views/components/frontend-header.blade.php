@@ -55,7 +55,7 @@
                     <a href="#testimonials" class="nav-link">Testimonials</a>
                     <a href="{{ route('mentors.index') }}" class="nav-link">Mentors</a>
                     <a href="#blog" class="nav-link">Blog</a>
-                    <a href="#courses" class="nav-link">Courses</a>
+                    <a href="{{ route('courses.index') }}" class="nav-link">Courses</a>
                 </div>
             </div>
 
