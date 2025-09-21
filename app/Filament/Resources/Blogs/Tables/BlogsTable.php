@@ -3,12 +3,16 @@
 namespace App\Filament\Resources\Blogs\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -19,12 +23,22 @@ class BlogsTable
         return $table
             ->columns([
                 TextColumn::make('title')
-                    ->searchable(),
-        
-                TextColumn::make('author')
-                    ->searchable(),
-                ImageColumn::make('image'),
-                TextColumn::make('status'),
+                    ->searchable()
+                    ->limit(20)
+                    ->sortable(),
+                TextColumn::make('category')
+                    ->searchable()
+                    ->sortable(),
+                ImageColumn::make('image')
+                    ->disk('public')
+                    ->circular(),
+                SelectColumn::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'published' => 'Published',
+                        'archived' => 'Archived',
+                    ])
+                    ->sortable(),
                 TextColumn::make('views')
                     ->numeric()
                     ->sortable(),
@@ -43,9 +57,18 @@ class BlogsTable
             ])
             ->filters([
                 TrashedFilter::make(),
+                SelectFilter::make('status')
+                    ->options([
+                        'draft' => 'Draft',
+                        'published' => 'Published',
+                        'archived' => 'Archived',
+                    ])
+                    ->label('Status'),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
