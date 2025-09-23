@@ -146,4 +146,8 @@ class CoursesController extends Controller
         }
         return $discountPercentage;
     }
+    public function enroll($id) {
+    $course = Course::findOrFail($id);
+    return view('frontend.courses_enroll', compact('course'));
+}
 }

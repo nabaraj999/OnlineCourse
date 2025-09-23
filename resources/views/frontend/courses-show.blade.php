@@ -53,14 +53,17 @@
                     <p class="flex items-center"><i class="fa-solid fa-chair mr-2 text-primary"></i> <strong>Available Seats:</strong> {{ $course->available_seats }} seats left</p>
                 </div>
 
-                <!-- Buttons -->
-                <a href="#" class="inline-block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium text-center transition duration-300 shadow-md hover:shadow-lg">
-                    Enroll Now <i class="fa-solid fa-arrow-right ml-2"></i>
-                </a>
+                <!-- Enroll the Course Section -->
+                <div class="space-y-4">
+                    <a href="{{ route('courses_enroll', $course->id) }}"
+                       class="inline-block w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium text-center transition duration-300 shadow-md hover:shadow-lg">
+                        Enroll Now <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </a>
 
-                <a href="#" class="inline-block w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-medium text-center transition duration-300 shadow-md hover:shadow-lg">
-                    Watch Demo Video <i class="fa-solid fa-play ml-2"></i>
-                </a>
+                    <a href="#" class="inline-block w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-medium text-center transition duration-300 shadow-md hover:shadow-lg">
+                        Watch Demo Video <i class="fa-solid fa-play ml-2"></i>
+                    </a>
+                </div>
             </div>
         </div>
 
