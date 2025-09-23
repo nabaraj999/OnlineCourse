@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\PrivacyPolicyeController;
@@ -20,3 +21,6 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/mentors', [MentorController::class, 'index'])->name('mentors.index');
 Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
 Route::get('/courses/{id}', [CoursesController::class, 'show'])->name('courses.show');
+
+Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
+Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
