@@ -32,7 +32,7 @@
                             @endif
                         </div>
                         <h3 class="text-xl font-bold text-gray-900 line-clamp-2">{{ $course->title }}</h3>
-                      
+
                         <div class="mt-4 flex items-center justify-between text-sm text-gray-500">
                             <span class="flex items-center"><i class="fa-regular fa-clock mr-1"></i>
                                 {{ $course->duration_days }} days</span>
