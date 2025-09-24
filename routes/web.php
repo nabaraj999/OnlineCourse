@@ -22,8 +22,7 @@ Route::post('/contact', [ContactController::class, 'store'])->name('contact.stor
 Route::get('/mentors', [MentorController::class, 'index'])->name('mentors.index');
 Route::get('/courses', [CoursesController::class, 'index'])->name('courses.index');
 Route::get('/courses/{slug}', [CoursesController::class, 'show'])->name('courses.show');
-Route::get('/courses/{id}/enroll', [CoursesController::class, 'enroll'])->name('courses_enroll');
-Route::post('/courses/{id}/enroll', [EnrollmentController::class, 'store'])->name('enrollments.store');
+
 
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
