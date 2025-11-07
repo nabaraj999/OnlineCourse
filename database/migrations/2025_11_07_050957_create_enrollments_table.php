@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('enrollments', function (Blueprint $table) {
-  $table->id();
+        Schema::create('enrollments', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
             $table->foreignId('payment_method_id')
-                  ->constrained('payment_methods')
-                  ->onDelete('cascade');
+                ->constrained('payment_methods')
+                ->onDelete('cascade');
             $table->string('full_name');
             $table->string('email')->index();
             $table->string('phone', 15);
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->index(['status', 'enrolled_at']);
             $table->index('course_id');
             $table->index('payment_method_id');
-});
+        });
     }
 
     /**

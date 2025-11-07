@@ -12,14 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payment_methods', function (Blueprint $table) {
-            $table->id(); // INT PRIMARY KEY
-            $table->string('method_name', 50); // VARCHAR(50)
-            $table->text('description'); // TEXT
-            $table->boolean('active')->default(true); // BOOLEAN DEFAULT TRUE
-            $table->string('account_holder', 50); // VARCHAR(50)
-            $table->integer('amount_number'); // INT
-            $table->string('qr', 255); // VARCHAR(255)
+           $table->id();
+
+            // Core Info
+            $table->string('method_name', 100);                    // e.g., eSewa, Khalti, IME Pay, Bank Transfer
+            $table->string('slug', 100)->unique();                 // For clean URLs if needed later
+            $table->text('description')->nullable();               // Optional long description
+
+            // Payment Details
+            $table->string('account_holder', 100);                 // Name on account
+            $table->string('account_number', 50);                  // Mobile no / Account no
+            $table->string('qr_code', 255)->nullable();            // Stored as: public/qr/esewa.png
+            $table->text('instructions')->nullable();              // HTML instructions: <ol><li>Scan QR...</li></ol>
+
+            // Status & Visibility
+            $table->boolean('active')->default(true)->index();     // Show in frontend?
+            $table->integer('sort_order')->default(0);             // For manual ordering
+
+            // Timestamps
             $table->timestamps();
+            $table->index(['active', 'sort_order']);
         });
     }
 

@@ -119,25 +119,33 @@
                             @enderror
                         </div>
 
-                        <div>
-                            <label for="payment_method" class="block text-sm font-medium text-gray-700">Payment Method</label>
-                            <select name="payment_method" id="payment_method" required x-on:change="updatePaymentDetails()"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                                <option value="" disabled selected>Select a payment method</option>
-                                @foreach ($payment_methods as $method)
-                                    @if ($method->active)
-                                        <option value="{{ $method->id }}"
-                                            x-data-details="{{ json_encode($method->only(['method_name', 'account_holder', 'account_number', 'qr_code', 'instructions'])) }}"
-                                            {{ old('payment_method') == $method->id ? 'selected' : '' }}>
-                                            {{ $method->method_name }} ({{ $method->account_holder }})
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </select>
-                            @error('payment_method')
-                                <span class="text-red-600 text-sm">{{ $message }}</span>
-                            @enderror
-                        </div>
+                        <!-- Payment Method Select - FIXED -->
+<div>
+    <label for="payment_method" class="block text-sm font-medium text-gray-700">Payment Method</label>
+    <select
+        name="payment_method"
+        id="payment_method"
+        required
+        @change="updatePaymentDetails()"
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+    >
+        <option value="" disabled selected>Select a payment method</option>
+        @foreach ($payment_methods as $method)
+            @if ($method->active)
+                <option
+                    value="{{ $method->id }}"
+                    data-method="{{ htmlentities(json_encode($method->only(['method_name', 'account_holder', 'account_number', 'qr_code', 'instructions']))) }}"
+                    {{ old('payment_method') == $method->id ? 'selected' : '' }}
+                >
+                    {{ $method->method_name }} ({{ $method->account_holder }})
+                </option>
+            @endif
+        @endforeach
+    </select>
+    @error('payment_method')
+        <span class="text-red-600 text-sm">{{ $message }}</span>
+    @enderror
+</div>
 
                         <!-- Dynamic Payment Details -->
                         <div x-show="selectedMethod" x-transition class="bg-blue-50 border border-blue-200 rounded-lg p-5 space-y-3">
@@ -210,19 +218,39 @@ function enrollmentForm() {
 
         updatePaymentDetails() {
             const select = document.getElementById('payment_method');
-            const selectedOption = select.options[select.selectedIndex];
-            const dataAttr = selectedOption.getAttribute('x-data-details');
-            const details = dataAttr ? JSON.parse(dataAttr) : null;
+            const option = select.options[select.selectedIndex];
 
-            if (details && details.qr_code) {
-                details.qr_code = details.qr_code.replace('public/', 'storage/');
+            if (!option || !option.value) {
+                this.selectedMethod = null;
+                return;
             }
 
-            this.selectedMethod = details;
+            // Read data from HTML data-* attribute
+            const raw = option.getAttribute('data-method');
+            if (!raw) {
+                this.selectedMethod = null;
+                return;
+            }
+
+            try {
+                let details = JSON.parse(raw);
+
+                // Fix QR path: public/ → storage/
+                if (details.qr_code) {
+                    details.qr_code = details.qr_code.replace('public/', 'storage/');
+                }
+
+                this.selectedMethod = details;
+            } catch (e) {
+                console.error('Failed to parse payment method data', e);
+                this.selectedMethod = null;
+            }
         },
 
         init() {
-            if (document.getElementById('payment_method').value) {
+            // Auto-load if old input exists (after validation fail)
+            const select = document.getElementById('payment_method');
+            if (select.value) {
                 this.updatePaymentDetails();
             }
         }

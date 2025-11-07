@@ -17,15 +17,19 @@ class PaymentMethodsTable
             ->columns([
                 TextColumn::make('method_name')
                     ->searchable(),
-                IconColumn::make('active')
-                    ->boolean(),
+                TextColumn::make('slug')
+                    ->searchable(),
                 TextColumn::make('account_holder')
                     ->searchable(),
-                TextColumn::make('amount_number')
+                TextColumn::make('account_number')
+                    ->searchable(),
+                TextColumn::make('qr_code')
+                    ->searchable(),
+                IconColumn::make('active')
+                    ->boolean(),
+                TextColumn::make('sort_order')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('qr')
-                    ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
