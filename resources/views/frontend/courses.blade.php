@@ -39,10 +39,10 @@
                             <span class="flex items-center"><i class="fa-solid fa-chair mr-1"></i>
                                 {{ $course->available_seats }} seats left</span>
                         </div>
-                        <a href="{{ route('courses.show', $course->id) }}"
-                            class="mt-5 inline-block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition duration-300">
-                            View Details
-                        </a>
+                       <a href="{{ route('courses.show', $course->slug) }}"
+   class="mt-5 inline-block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition duration-300">
+    View Details
+</a>
                     </div>
                 </div>
             @empty

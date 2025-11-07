@@ -4,150 +4,160 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
+use App\Models\PaymentMethods;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class CoursesController extends Controller
 {
+    /**
+     * Display a listing of active courses.
+     */
     public function index()
     {
         try {
-            // Bypass cache for debugging
-            Cache::forget('frontend_courses_all');
-
-            $courses = Course::with([
-                'teacher' => fn($query) => $query->withDefault(),
-                'company' => fn($query) => $query->withDefault()
-            ])
-                ->where('active_status', 'active')
-                ->orderBy('id')
-                ->get()
-                ->map(function ($course) {
-                    $course->duration_days = $this->calculateDuration($course);
-                    $course->original_price_npr = $course->price ?? 0;
-                    $course->discounted_price_npr = $course->price ?? 0;
-                    $course->available_seats = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
-                    $course->rating = $course->rating ?? 'N/A';
-                    $course->syllabus = $course->syllabus ?? 'No description available';
-                    $course->photo = $course->photo ?? 'default.jpg';
-
-                    if ($course->active_status === 'active') {
-                        $discountPercentage = $this->calculateDiscount($course);
-                        $course->discounted_price_npr = $course->original_price_npr * (1 - $discountPercentage / 100);
-                    }
-
-                    return $course;
-                });
-
-            // Log detailed course data at current time
-            $currentTime = Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T');
-            Log::info('Courses fetched for courses page at ' . $currentTime, [
-                'count' => $courses->count(),
-                'course_ids' => $courses->pluck('id')->toArray(),
-                'titles' => $courses->pluck('title')->toArray(),
-                'details' => $courses->map(function ($course) {
-                    return [
-                        'id' => $course->id,
-                        'price' => $course->price,
-                        'total_seats' => $course->total_seats,
-                        'enrolled_seats' => $course->enrolled_seats,
-                        'start_date' => $course->start_date,
-                        'teacher_id' => $course->teacher_id,
-                        'company_id' => $course->company_id,
-                    ];
-                })->all(),
-            ]);
+            // Optional: cache for 10 minutes in production
+            $courses = Cache::remember('frontend_courses_all', 600, function () {
+                return Course::with([
+                        'teacher' => fn($q) => $q->withDefault(['name' => 'N/A']),
+                        'company' => fn($q) => $q->withDefault(['name' => 'N/A'])
+                    ])
+                    ->where('active_status', 'active')
+                    ->orderBy('id')
+                    ->get()
+                    ->map([$this, 'enhanceCourse']);
+            });
 
             return view('frontend.courses', compact('courses'));
         } catch (\Exception $e) {
-            Log::error('Error in CoursesController@index: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString(),
-                'courses_count' => isset($courses) ? $courses->count() : 0,
-                'time' => Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T'),
-            ]);
-            return redirect()->back()->with('error', 'An error occurred while loading the courses page. Please try again later.');
+            Log::error('CoursesController@index error: ' . $e->getMessage());
+            return redirect()->route('home')->with('error', 'Failed to load courses.');
         }
     }
 
-    public function show($id)
+    /**
+     * Display the specified course with payment methods.
+     */
+    public function show($slug)
     {
         try {
             $course = Course::with([
-                'teacher' => fn($query) => $query->withDefault(),
-                'company' => fn($query) => $query->withDefault()
-            ])
+                    'teacher' => fn($q) => $q->withDefault(['name' => 'N/A']),
+                    'company' => fn($q) => $q->withDefault(['name' => 'N/A'])
+                ])
                 ->where('active_status', 'active')
-                ->findOrFail($id);
+                ->where('slug', $slug)
+                ->firstOrFail();
 
-            $course->duration_days = $this->calculateDuration($course);
-            $course->original_price_npr = $course->price ?? 0;
-            $course->discounted_price_npr = $course->price ?? 0;
-            $course->available_seats = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
-            $course->rating = $course->rating ?? 'N/A';
-            $course->syllabus = $course->syllabus ?? 'No description available';
-            $course->photo = $course->photo ?? 'default.jpg';
+            $course = $this->enhanceCourse($course);
 
-            if ($course->active_status === 'active') {
-                $discountPercentage = $this->calculateDiscount($course);
-                $course->discounted_price_npr = $course->original_price_npr * (1 - $discountPercentage / 100);
-            }
+            $payment_methods = PaymentMethods::where('active', true)
+                ->orderBy('method_name')
+                ->get();
 
-            // Log course details
-            $currentTime = Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T');
-            Log::info('Course details fetched at ' . $currentTime, [
-                'course_id' => $course->id,
-                'title' => $course->title,
-                'price' => $course->price,
-                'total_seats' => $course->total_seats,
-                'enrolled_seats' => $course->enrolled_seats,
-                'start_date' => $course->start_date,
-                'teacher_id' => $course->teacher_id,
-                'company_id' => $course->company_id,
-            ]);
-
-            return view('frontend.courses-show', compact('course'));
+            return view('frontend.courses-show', compact('course', 'payment_methods'));
         } catch (\Exception $e) {
-            Log::error('Error in CoursesController@show: ' . $e->getMessage(), [
-                'course_id' => $id,
-                'trace' => $e->getTraceAsString(),
-                'time' => Carbon::now()->setTimezone('Asia/Kathmandu')->format('Y-m-d H:i:s T'),
-            ]);
-            return redirect()->route('courses.index')->with('error', 'Course not found or an error occurred.');
+            Log::error('CoursesController@show error (slug: ' . $slug . '): ' . $e->getMessage());
+            return redirect()->route('courses.index')
+                ->with('error', 'Course not found or currently unavailable.');
         }
     }
 
-    private function calculateDuration($course)
+    /**
+     * Handle course enrollment.
+     */
+    public function enroll(Request $request, Course $course) // Auto-resolved by {course:slug}
+    {
+        // Ensure course is active and has seats
+        if ($course->active_status !== 'active') {
+            return back()->with('error', 'This course is no longer available.');
+        }
+
+        if (($course->available_seats ?? 0) <= 0) {
+            return back()->with('error', 'Sorry, no seats left for this course.');
+        }
+
+        $validated = $request->validate([
+            'full_name'      => 'required|string|max:255',
+            'email'          => 'required|email|max:255',
+            'phone'          => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+            'payment_method' => 'required|exists:payment_methods,id',
+        ]);
+
+        // Re-enhance course to get fresh discounted price
+        $course = $this->enhanceCourse($course);
+
+        // Generate strong random password
+        $generatedPassword = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%'), 0, 10));
+
+        // TODO: Save to enrollments table + send email
+        // Enrollment::create([...]);
+
+        $paymentMethod = PaymentMethods::findOrFail($validated['payment_method']);
+
+        return redirect()->route('courses.show', $course->slug)
+            ->with('success', 'You have been successfully enrolled!')
+            ->with('password', $generatedPassword)
+            ->with('payment_amount', $course->discounted_price_npr)
+            ->with('payment_method', $paymentMethod->method_name . ' (' . $paymentMethod->account_holder . ')');
+    }
+
+    /**
+     * Enhance course with calculated fields (DRY).
+     */
+    private function enhanceCourse(Course $course): Course
+    {
+        $course->duration_days       = $this->calculateDuration($course);
+        $course->original_price_npr  = $course->price ?? 0;
+        $course->discounted_price_npr = $course->price ?? 0;
+        $course->available_seats     = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
+        $course->rating              = $course->rating ?? 'N/A';
+        $course->syllabus            = $course->syllabus ?? 'No syllabus available.';
+        $course->photo               = $course->photo ?? 'courses/default.jpg';
+
+        $discount = $this->calculateDiscount($course);
+        if ($discount > 0) {
+            $course->discounted_price_npr = round($course->original_price_npr * (1 - $discount / 100), 2);
+        }
+
+        return $course;
+    }
+
+    /**
+     * Calculate course duration in days.
+     */
+    private function calculateDuration(Course $course): int
     {
         try {
-            $start = $course->start_date ? Carbon::parse($course->start_date) : Carbon::now();
-            $end = $course->end_date ? Carbon::parse($course->end_date) : Carbon::now();
+            $start = $course->start_date ? Carbon::parse($course->start_date) : now();
+            $end   = $course->end_date   ? Carbon::parse($course->end_date)   : $start;
             return $start->diffInDays($end);
         } catch (\Exception $e) {
-            Log::warning('Invalid date for course ID ' . ($course->id ?? 'unknown') . ': ' . $e->getMessage());
+            Log::warning('Invalid dates for course ID: ' . $course->id);
             return 0;
         }
     }
 
-    private function calculateDiscount($course)
+    /**
+     * Calculate active discount percentage.
+     */
+    private function calculateDiscount(Course $course): float
     {
-        $discountPercentage = 0;
-        if ($course->discount_valid_from && $course->discount_valid_to) {
-            try {
-                $now = Carbon::now()->setTimezone('Asia/Kathmandu');
-                $from = Carbon::parse($course->discount_valid_from);
-                $to = Carbon::parse($course->discount_valid_to);
-                if ($now->between($from, $to)) {
-                    $discountPercentage = $course->discount_percentage ?? 0;
-                }
-            } catch (\Exception $e) {
-                Log::warning('Invalid discount dates for course ID ' . ($course->id ?? 'unknown') . ': ' . $e->getMessage());
-            }
+        if (!$course->discount_valid_from || !$course->discount_valid_to || !$course->discount_percentage) {
+            return 0;
         }
-        return $discountPercentage;
+
+        try {
+            $now  = Carbon::now()->setTimezone('Asia/Kathmandu');
+            $from = Carbon::parse($course->discount_valid_from);
+            $to   = Carbon::parse($course->discount_valid_to)->endOfDay();
+
+            return $now->between($from, $to) ? (float) $course->discount_percentage : 0;
+        } catch (\Exception $e) {
+            Log::warning('Invalid discount dates for course ID: ' . $course->id);
+            return 0;
+        }
     }
-    public function enroll($id) {
-    $course = Course::findOrFail($id);
-    return view('frontend.courses_enroll', compact('course'));
-}
 }
