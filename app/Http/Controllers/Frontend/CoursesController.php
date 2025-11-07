@@ -12,52 +12,38 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CoursesController extends Controller
 {
-    public function index()
-    {
-        try {
-            $courses = Cache::remember('frontend_courses_all', 600, function () {
-                return Course::with([
-                    'teacher' => fn ($q) => $q->withDefault(['name' => 'N/A']),
-                    'company' => fn ($q) => $q->withDefault(['name' => 'N/A'])
-                ])
-                    ->where('active_status', 'active')
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-                    ->map(fn ($course) => $this->enhanceCourse($course));
-            });
-
-            return view('frontend.courses', compact('courses'));
-        } catch (\Exception $e) {
-            Log::error('CoursesController@index: ' . $e->getMessage());
-            return redirect()->route('home')->with('error', 'Failed to load courses.');
-        }
-    }
-
     public function show($slug)
     {
         try {
-            $course = Course::with([
-                'teacher' => fn ($q) => $q->withDefault(['name' => 'N/A']),
-                'company' => fn ($q) => $q->withDefault(['name' => 'N/A'])
-            ])
-                ->where('active_status', 'active')
-                ->where('slug', $slug)
-                ->firstOrFail();
+            // ── 1. Course (cached) ─────────────────────────────────────
+            $course = Cache::remember("course_{$slug}", 600, function () use ($slug) {
+                return Course::with([
+                    'teacher' => fn($q) => $q->withDefault(['name' => 'N/A']),
+                    'company' => fn($q) => $q->withDefault(['name' => 'N/A']),
+                ])
+                    ->where('active_status', 'active')
+                    ->where('slug', $slug)
+                    ->firstOrFail();
+            });
 
             $course = $this->enhanceCourse($course);
 
-            $payment_methods = PaymentMethods::where('active', true)
-                ->orderBy('method_name')
-                ->get();
+            // Only ACTIVE methods, cached, NO map()
+            $selected_payment_method = Cache::remember('active_payment_method', 3600, function () {
+                return PaymentMethods::active()
+                    ->orderBy('sort_order')
+                    ->first(); // ← first active only
+            });
 
-            return view('frontend.courses-show', compact('course', 'payment_methods'));
+            return view('frontend.courses-show', compact('course', 'selected_payment_method'));
         } catch (\Exception $e) {
             Log::error("Course show error [{$slug}]: " . $e->getMessage());
             return redirect()->route('courses.index')
-                ->with('error', 'Course not found or unavailable.');
+                ->with('error', 'Course not found.');
         }
     }
 
@@ -65,11 +51,6 @@ class CoursesController extends Controller
     {
         if ($course->active_status !== 'active') {
             return back()->with('error', 'This course is no longer available.');
-        }
-
-        $availableSeats = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
-        if ($availableSeats <= 0) {
-            return back()->with('error', 'No seats left!');
         }
 
         $validated = $request->validate([
@@ -80,17 +61,25 @@ class CoursesController extends Controller
             'reference_code'     => 'required|string|max:100|unique:enrollments,reference_code',
             'payment_screenshot' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
         ], [
-            'phone.regex'           => 'Valid Nepali number required (98XXXXXXXX)',
+            'phone.regex' => 'Valid Nepali number required (e.g., 98XXXXXXXX)',
             'reference_code.unique' => 'This Transaction ID is already used.',
         ]);
 
-        try {
-            $course        = $this->enhanceCourse($course->fresh());
-            $paymentMethod = PaymentMethods::findOrFail($validated['payment_method']);
-            $now           = Carbon::now('Asia/Kathmandu');
+        return DB::transaction(function () use ($request, $course, $validated) {
+            $course = $course->lockForUpdate()->find($course->id);
+            $available = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
 
-            $path = $request->file('payment_screenshot')->store(
-                "payment-screenshots/{$course->id}/" . $now->format('Y/m'),
+            if ($available <= 0) {
+                throw new \Exception('No seats left!');
+            }
+
+            $course = $this->enhanceCourse($course->fresh());
+            $paymentMethod = PaymentMethods::findOrFail($validated['payment_method']);
+            $now = Carbon::now('Asia/Kathmandu');
+
+            $path = $request->file('payment_screenshot')->storeAs(
+                "screenshots/{$course->id}/{$now->format('Y/m')}",
+                $request->file('payment_screenshot')->hashName(),
                 'public'
             );
 
@@ -114,30 +103,21 @@ class CoursesController extends Controller
 
             $course->increment('enrolled_seats');
             Cache::forget('frontend_courses_all');
+            Cache::forget("course_{$course->slug}");
 
             return redirect()->route('courses.show', $course->slug)
-                ->with('success', 'Enrolled successfully!')
+                ->with('success', 'Enrolled successfully! Check your details below.')
                 ->with('password', $password)
                 ->with('payment_amount', $course->discounted_price_npr)
                 ->with('payment_method', $paymentMethod->method_name . ' - ' . $paymentMethod->account_holder)
                 ->with('reference_code', $validated['reference_code']);
-
-        } catch (\Exception $e) {
-            Log::error('Enrollment failed: ' . $e->getMessage());
-
-            if (isset($path) && Storage::disk('public')->exists($path)) {
-                Storage::disk('public')->delete($path);
-            }
-
-            return back()->withInput()->with('error', 'Enrollment failed. Try again.');
-        }
+        });
     }
 
     private function enhanceCourse(Course $course): Course
     {
         $now = Carbon::now('Asia/Kathmandu');
 
-        $course->duration_days        = $this->calculateDuration($course);
         $course->original_price_npr   = $course->price ?? 0;
         $course->discounted_price_npr = $course->price ?? 0;
         $course->available_seats      = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
@@ -161,16 +141,5 @@ class CoursesController extends Controller
         }
 
         return $course;
-    }
-
-    private function calculateDuration(Course $course): int
-    {
-        try {
-            $start = $course->start_date ? Carbon::parse($course->start_date) : now();
-            $end   = $course->end_date ? Carbon::parse($course->end_date) : $start;
-            return $start->diffInDays($end) + 1;
-        } catch (\Exception $e) {
-            return 0;
-        }
     }
 }

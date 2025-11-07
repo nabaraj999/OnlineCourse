@@ -47,13 +47,13 @@ class PaymentMethodsForm
                     ->label('QR Code')
                     ->helperText('Upload PNG/JPG → stored in public/storage/qr/'),
                 RichEditor::make('instructions')
-                     ->toolbarButtons([
-        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
-        ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd'],
-        ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
-        ['table', 'attachFiles'], // The `customBlocks` and `mergeTags` tools are also added here if those features are used.
-        ['undo', 'redo'],
-    ])
+                    ->toolbarButtons([
+                        ['bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link'],
+                        ['h2', 'h3', 'alignStart', 'alignCenter', 'alignEnd'],
+                        ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+                        ['table', 'attachFiles'], // The `customBlocks` and `mergeTags` tools are also added here if those features are used.
+                        ['undo', 'redo'],
+                    ])
                     ->columnSpanFull()
                     ->hint('Use [[amount]] to show dynamic price')
                     ->placeholder('Enter payment steps...'),
