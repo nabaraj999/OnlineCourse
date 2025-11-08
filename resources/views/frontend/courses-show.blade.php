@@ -196,7 +196,7 @@
         <div class="mt-10 text-center">
             <a href="{{ route('courses.index') }}"
                class="inline-flex items-center px-6 py-3 bg-secondary-100 hover:bg-secondary-200 text-primary rounded-lg font-medium transition shadow-md hover:shadow-lg">
-                Back to All Courses
+                Back to Courses
                 <i class="fa-solid fa-arrow-left ml-2"></i>
             </a>
         </div>
