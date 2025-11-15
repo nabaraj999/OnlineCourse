@@ -47,10 +47,8 @@
 
                 {{-- Course Image --}}
                 <div class="w-full h-64 md:h-72 bg-gray-200 rounded-lg overflow-hidden">
-                    <img src="{{ Storage::url($course->photo) }}"
-                         alt="{{ $course->title }}"
-                         class="w-full h-full object-cover"
-                         onerror="this.src='/images/placeholder.jpg';">
+                    <img src="{{ Storage::url($course->photo) }}" alt="{{ $course->title }}"
+                        class="w-full h-full object-cover" onerror="this.src='/images/placeholder.jpg';">
                 </div>
 
                 {{-- Price --}}
@@ -86,34 +84,41 @@
                 <div class="space-y-5">
                     <h3 class="text-xl font-bold text-gray-900">Enroll Now</h3>
 
-                    <form action="{{ route('courses.enroll', $course->slug) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                    <form action="{{ route('courses.enroll', $course->slug) }}" method="POST"
+                        enctype="multipart/form-data" class="space-y-5">
                         @csrf
 
                         {{-- Full Name --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Full Name</label>
                             <input type="text" name="full_name" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                   placeholder="John Doe" value="{{ old('full_name') }}">
-                            @error('full_name') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                placeholder="John Doe" value="{{ old('full_name') }}">
+                            @error('full_name')
+                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         {{-- Email --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Email</label>
                             <input type="email" name="email" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                   placeholder="you@example.com" value="{{ old('email') }}">
-                            @error('email') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                placeholder="you@example.com" value="{{ old('email') }}">
+                            @error('email')
+                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         {{-- Phone --}}
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Phone (Nepal)</label>
                             <input type="tel" name="phone" required
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                   placeholder="98XXXXXXXX" value="{{ old('phone') }}">
-                            @error('phone') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                placeholder="98XXXXXXXX" value="{{ old('phone') }}">
+                            @error('phone')
+                                <span class="text-red-600 text-xs">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         {{-- Payment Method (Only if active) --}}
@@ -139,17 +144,19 @@
                                 {{-- QR Code --}}
                                 @if ($selected_payment_method->qr_code_url)
                                     <div class="mt-4 text-center">
-                                        <div class="inline-block p-3 bg-white rounded-xl shadow-md border border-gray-200">
-                                            <img src="{{ $selected_payment_method->qr_code_url }}"
-                                                 alt="Scan to Pay"
-                                                 class="w-56 h-56 object-contain">
+                                        <div
+                                            class="inline-block p-3 bg-white rounded-xl shadow-md border border-gray-200">
+                                            <img src="{{ $selected_payment_method->qr_code_url }}" alt="Scan to Pay"
+                                                class="w-56 h-56 object-contain">
                                         </div>
                                         <p class="mt-3 text-xs text-gray-600 font-medium">
-                                            Pay: <strong>NPR {{ number_format($course->discounted_price_npr, 2) }}</strong>
+                                            Pay: <strong>NPR
+                                                {{ number_format($course->discounted_price_npr, 2) }}</strong>
                                         </p>
                                     </div>
                                 @else
-                                    <div class="w-56 h-56 mx-auto bg-gray-100 border-2 border-dashed rounded-xl flex items-center justify-center">
+                                    <div
+                                        class="w-56 h-56 mx-auto bg-gray-100 border-2 border-dashed rounded-xl flex items-center justify-center">
                                         <span class="text-xs text-gray-500">QR Not Available</span>
                                     </div>
                                 @endif
@@ -159,22 +166,26 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Transaction ID</label>
                                 <input type="text" name="reference_code" required
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                                       placeholder="e.g., TRX123456" value="{{ old('reference_code') }}">
-                                @error('reference_code') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                    placeholder="e.g., TRX123456" value="{{ old('reference_code') }}">
+                                @error('reference_code')
+                                    <span class="text-red-600 text-xs">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             {{-- Screenshot Upload --}}
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Payment Screenshot</label>
                                 <input type="file" name="payment_screenshot" accept="image/*" required
-                                       class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-                                @error('payment_screenshot') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
+                                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                                @error('payment_screenshot')
+                                    <span class="text-red-600 text-xs">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             {{-- Submit --}}
                             <button type="submit"
-                                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition shadow-md hover:shadow-lg">
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-medium transition shadow-md hover:shadow-lg">
                                 Enroll Now <i class="fa-solid fa-arrow-right ml-2"></i>
                             </button>
                         @else
@@ -185,7 +196,8 @@
                     </form>
 
                     {{-- Demo Video Button --}}
-                    <a href="#" class="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-medium transition shadow-md hover:shadow-lg">
+                    <a href="#"
+                        class="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white py-2 rounded-lg font-medium transition shadow-md hover:shadow-lg">
                         Watch Demo Video <i class="fa-solid fa-play ml-2"></i>
                     </a>
                 </div>
@@ -195,7 +207,7 @@
         {{-- Back to Courses --}}
         <div class="mt-10 text-center">
             <a href="{{ route('courses.index') }}"
-               class="inline-flex items-center px-6 py-3 bg-secondary-100 hover:bg-secondary-200 text-primary rounded-lg font-medium transition shadow-md hover:shadow-lg">
+                class="inline-flex items-center px-6 py-3 bg-secondary-100 hover:bg-secondary-200 text-primary rounded-lg font-medium transition shadow-md hover:shadow-lg">
                 Back to Courses
                 <i class="fa-solid fa-arrow-left ml-2"></i>
             </a>
