@@ -5,141 +5,143 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\PaymentMethods;
-use App\Models\Enrollment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 
 class CoursesController extends Controller
 {
+    public function index()
+    {
+        try {
+            $courses = Cache::remember('frontend_courses_active', 600, function () {
+                return Course::with([
+                        'teacher:id,name',
+                        'company:id,name'
+                    ])
+                    ->where('active_status', 'active')
+                    ->orderByDesc('id')
+                    ->get()
+                    ->map([$this, 'enhanceCourse']);
+            });
+
+            return view('frontend.courses', compact('courses'));
+        } catch (\Exception $e) {
+            Log::error('CoursesController@index error: ' . $e->getMessage());
+            return redirect()->route('home')->with('error', 'Failed to load courses.');
+        }
+    }
+
     public function show($slug)
     {
         try {
-            // ── 1. Course (cached) ─────────────────────────────────────
-            $course = Cache::remember("course_{$slug}", 600, function () use ($slug) {
-                return Course::with([
-                    'teacher' => fn($q) => $q->withDefault(['name' => 'N/A']),
-                    'company' => fn($q) => $q->withDefault(['name' => 'N/A']),
+            $course = Course::with([
+                    'teacher:id,name',
+                    'company:id,name'
                 ])
-                    ->where('active_status', 'active')
-                    ->where('slug', $slug)
-                    ->firstOrFail();
-            });
+                ->where('active_status', 'active')
+                ->where('slug', $slug)
+                ->firstOrFail();
 
             $course = $this->enhanceCourse($course);
 
-            // Only ACTIVE methods, cached, NO map()
-            $selected_payment_method = Cache::remember('active_payment_method', 3600, function () {
-                return PaymentMethods::active()
-                    ->orderBy('sort_order')
-                    ->first(); // ← first active only
-            });
+            $payment_methods = PaymentMethods::where('active', true)
+                ->orderBy('method_name')
+                ->get();
 
-            return view('frontend.courses-show', compact('course', 'selected_payment_method'));
+            return view('frontend.courses-show', compact('course', 'payment_methods'));
         } catch (\Exception $e) {
-            Log::error("Course show error [{$slug}]: " . $e->getMessage());
+            Log::error("Course show error [slug: $slug]: " . $e->getMessage());
             return redirect()->route('courses.index')
-                ->with('error', 'Course not found.');
+                ->with('error', 'Course not found or currently unavailable.');
         }
     }
 
     public function enroll(Request $request, Course $course)
     {
         if ($course->active_status !== 'active') {
-            return back()->with('error', 'This course is no longer available.');
+            return back()->with('error', 'This course is no longer active.');
         }
 
-        $validated = $request->validate([
-            'full_name'          => 'required|string|max:255',
-            'email'              => 'required|email|max:255',
-            'phone'              => 'required|regex:/^(\+977)?[0-9]{10}$/',
-            'payment_method'     => 'required|exists:payment_methods,id',
-            'reference_code'     => 'required|string|max:100|unique:enrollments,reference_code',
-            'payment_screenshot' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
-        ], [
-            'phone.regex' => 'Valid Nepali number required (e.g., 98XXXXXXXX)',
-            'reference_code.unique' => 'This Transaction ID is already used.',
+        $availableSeats = $course->total_seats - $course->enrolled_seats;
+        if ($availableSeats <= 0) {
+            return back()->with('error', 'Sorry, this course is fully booked.');
+        }
+
+        $request->validate([
+            'full_name'      => 'required|string|max:255',
+            'email'          => 'required|email|max:255',
+            'phone'          => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+            'payment_method' => 'required|exists:payment_methods,id',
         ]);
 
-        return DB::transaction(function () use ($request, $course, $validated) {
-            $course = $course->lockForUpdate()->find($course->id);
-            $available = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
+        // Refresh enhanced data
+        $course = $this->enhanceCourse($course);
 
-            if ($available <= 0) {
-                throw new \Exception('No seats left!');
-            }
+        $password = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&'), 0, 12));
 
-            $course = $this->enhanceCourse($course->fresh());
-            $paymentMethod = PaymentMethods::findOrFail($validated['payment_method']);
-            $now = Carbon::now('Asia/Kathmandu');
+        $paymentMethod = PaymentMethods::findOrFail($request->payment_method);
 
-            $path = $request->file('payment_screenshot')->storeAs(
-                "screenshots/{$course->id}/{$now->format('Y/m')}",
-                $request->file('payment_screenshot')->hashName(),
-                'public'
-            );
+        // TODO: Save enrollment here later
 
-            $password = strtoupper(Str::random(10));
-
-            Enrollment::create([
-                'course_id'         => $course->id,
-                'full_name'         => $validated['full_name'],
-                'email'             => $validated['email'],
-                'phone'             => $validated['phone'],
-                'payment_method_id' => $validated['payment_method'],
-                'reference_code'    => $validated['reference_code'],
-                'screenshot_path'   => $path,
-                'screenshot_url'    => Storage::url($path),
-                'amount_paid'       => $course->discounted_price_npr,
-                'password'          => bcrypt($password),
-                'plain_password'    => $password,
-                'status'            => 'pending',
-                'enrolled_at'       => $now,
-            ]);
-
-            $course->increment('enrolled_seats');
-            Cache::forget('frontend_courses_all');
-            Cache::forget("course_{$course->slug}");
-
-            return redirect()->route('courses.show', $course->slug)
-                ->with('success', 'Enrolled successfully! Check your details below.')
-                ->with('password', $password)
-                ->with('payment_amount', $course->discounted_price_npr)
-                ->with('payment_method', $paymentMethod->method_name . ' - ' . $paymentMethod->account_holder)
-                ->with('reference_code', $validated['reference_code']);
-        });
+        return back()->with([
+            'success'          => 'Enrollment successful! Please complete your payment.',
+            'generated_password' => $password,
+            'payment_amount'   => number_format($course->discounted_price_npr, 2),
+            'payment_method'   => $paymentMethod->method_name .
+                                 ($paymentMethod->account_holder ? ' - ' . $paymentMethod->account_holder : '')
+        ]);
     }
 
-    private function enhanceCourse(Course $course): Course
+    /**
+     * Add computed attributes to course
+     */
+    public function enhanceCourse(Course $course): Course
     {
         $now = Carbon::now('Asia/Kathmandu');
 
-        $course->original_price_npr   = $course->price ?? 0;
-        $course->discounted_price_npr = $course->price ?? 0;
-        $course->available_seats      = ($course->total_seats ?? 0) - ($course->enrolled_seats ?? 0);
-        $course->photo                = $course->photo ?? 'courses/default.jpg';
+        // Basic computed fields
+        $course->available_seats = $course->total_seats - $course->enrolled_seats;
+        $course->duration_days   = $this->calculateDuration($course);
+        $course->original_price_npr = $course->price;
+        $course->photo_path      = $course->photo ? Storage::url($course->photo) : asset('images/courses/default.jpg');
 
-        $discount = 0;
+        // Discount logic
+        $discountPercentage = 0;
         if (
             $course->discount_percentage > 0 &&
             $course->discount_valid_from &&
-            $course->discount_valid_to &&
-            $now->between(
-                Carbon::parse($course->discount_valid_from),
-                Carbon::parse($course->discount_valid_to)->endOfDay()
-            )
+            $course->discount_valid_to
         ) {
-            $discount = (float) $course->discount_percentage;
+            $from = Carbon::parse($course->discount_valid_from);
+            $to   = Carbon::parse($course->discount_valid_to)->endOfDay();
+
+            if ($now->between($from, $to)) {
+                $discountPercentage = (float) $course->discount_percentage;
+            }
         }
 
-        if ($discount > 0) {
-            $course->discounted_price_npr = round($course->original_price_npr * (1 - $discount / 100), 2);
+        $course->active_discount = $discountPercentage > 0;
+        $course->discount_percentage_active = $discountPercentage;
+
+        if ($discountPercentage > 0) {
+            $course->discounted_price_npr = round($course->price * (1 - $discountPercentage / 100), 2);
+        } else {
+            $course->discounted_price_npr = $course->price;
         }
 
         return $course;
+    }
+
+    private function calculateDuration(Course $course): int
+    {
+        if (!$course->start_date) return 0;
+
+        $start = Carbon::parse($course->start_date);
+        $end   = $course->end_date ? Carbon::parse($course->end_date) : $start;
+
+        return $start->diffInDays($end) + 1; // inclusive
     }
 }
