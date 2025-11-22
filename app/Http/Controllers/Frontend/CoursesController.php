@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class CoursesController extends Controller
 {
@@ -21,10 +22,7 @@ class CoursesController extends Controller
     {
         try {
             $courses = Cache::remember('frontend_courses_active', 600, function () {
-                return Course::with([
-                        'teacher:id,name',
-                        'company:id,name'
-                    ])
+                return Course::with(['teacher:id,name', 'company:id,name'])
                     ->where('active_status', 'active')
                     ->orderByDesc('id')
                     ->get()
@@ -41,10 +39,7 @@ class CoursesController extends Controller
     public function show($slug)
     {
         try {
-            $course = Course::with([
-                    'teacher:id,name',
-                    'company:id,name'
-                ])
+            $course = Course::with(['teacher:id,name', 'company:id,name'])
                 ->where('active_status', 'active')
                 ->where('slug', $slug)
                 ->firstOrFail();
@@ -63,37 +58,66 @@ class CoursesController extends Controller
         }
     }
 
-    // AJAX Enrollment via Modal (New Method)
+    // FINAL & BEST VERSION OF ENROLL STORE
     public function enrollStore(Request $request)
     {
         $request->validate([
-            'course_id'        => 'required|exists:courses,id',
-            'full_name'        => 'required|string|max:255',
-            'email'            => 'required|email|max:255',
-            'phone'            => 'required|string|regex:/^\+?[0-9]{10,15}$/',
-            'reference_code'   => 'required|string|max:50|unique:enrollments,reference_code',
-            'payment_method_id'=> 'required|exists:payment_methods,id',
-            'screenshot'       => 'required|image|mimes:jpg,jpeg,png|max:5048',
+            'course_id'         => 'required|exists:courses,id',
+            'full_name'         => 'required|string|max:255',
+            'email'             => 'required|email|max:255',
+            'phone'             => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+            'reference_code'    => 'required|string|max:50',
+            'payment_method_id' => 'required|exists:payment_methods,id',
+            'screenshot'        => 'required|image|mimes:jpg,jpeg,png|max:5048',
         ]);
 
         return DB::transaction(function () use ($request) {
-            $course = Course::findOrFail($request->course_id);
-            $course = $this->enhanceCourse($course); // Apply discount logic
+            // Lock the course row to prevent race condition
+            $course = Course::where('id', $request->course_id)
+                ->where('active_status', 'active')
+                ->lockForUpdate()
+                ->firstOrFail();
 
-            // Double-check seat availability with row lock
+            // Re-apply discount logic (important after lock)
+            $course = $this->enhanceCourse($course);
+
+            // Check available seats
             $availableSeats = $course->total_seats - $course->enrolled_seats;
+
             if ($availableSeats <= 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Sorry, this course is now fully booked!'
-                ], 422);
+                throw ValidationException::withMessages([
+                    'course_id' => 'Sorry, this course is now fully booked!'
+                ]);
             }
 
-            // Generate secure password
-            $plainPassword = strtoupper(Str::random(8)) . rand(10, 99);
-            $screenshot = $request->file('screenshot');
-            $path = $screenshot->store('enrollments/screenshots', 'public');
+            // Optional: Prevent duplicate enrollment (recommended)
+            $existing = Enrollment::where('course_id', $course->id)
+                ->whereIn('email', [$request->email])
+                ->orWhere('phone', $request->phone)
+                ->first();
 
+            if ($existing) {
+                throw ValidationException::withMessages([
+                    'email' => 'You have already enrolled in this course.'
+                ]);
+            }
+
+            // Check reference code uniqueness
+            if (Enrollment::where('reference_code', $request->reference_code)->exists()) {
+                throw ValidationException::withMessages([
+                    'reference_code' => 'This transaction reference has already been used.'
+                ]);
+            }
+
+            // Generate strong random password
+            $plainPassword = strtoupper(Str::random(6)) . rand(10, 99);
+
+            // Store screenshot
+            $screenshot = $request->file('screenshot');
+            $filename = time() . '_' . $request->reference_code . '.' . $screenshot->getClientOriginalExtension();
+            $path = $screenshot->storeAs('enrollments/screenshots', $filename, 'public');
+
+            // Create enrollment
             $enrollment = Enrollment::create([
                 'course_id'         => $course->id,
                 'payment_method_id' => $request->payment_method_id,
@@ -110,33 +134,29 @@ class CoursesController extends Controller
                 'enrolled_at'       => now(),
             ]);
 
-            // Decrement seats safely
+            // Atomically increment enrolled seats
             $course->increment('enrolled_seats');
-            // Or if you have available_seats column:
-            // $course->decrement('available_seats');
 
-            Log::info("New enrollment created", [
+            Log::info('New enrollment created', [
                 'enrollment_id' => $enrollment->id,
-                'course' => $course->title,
-                'student' => $request->full_name
+                'course'        => $course->title,
+                'student'       => $request->full_name,
+                'email'         => $request->email,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Enrollment successful! Your account is created.',
-                'plain_password' => $plainPassword
+                'message' => 'Enrollment submitted successfully! Your account has been created.',
+                'plain_password' => $plainPassword,
+                'enrollment_id' => $enrollment->id
             ]);
         });
     }
 
-    /**
-     * Add computed attributes to course
-     */
     public function enhanceCourse(Course $course): Course
     {
         $now = Carbon::now('Asia/Kathmandu');
 
-        // Basic computed fields
         $course->available_seats = $course->total_seats - $course->enrolled_seats;
         $course->duration_days   = $this->calculateDuration($course);
         $course->original_price_npr = $course->price;
@@ -144,7 +164,6 @@ class CoursesController extends Controller
             ? Storage::url($course->photo)
             : asset('images/courses/default.jpg');
 
-        // Discount logic
         $discountPercentage = 0;
         if (
             $course->discount_percentage > 0 &&
