@@ -33,9 +33,9 @@ Route::get('/courses', [CoursesController::class, 'index'])
 
 Route::get('/courses/{course:slug}', [CoursesController::class, 'show'])
      ->name('courses.show');
-
-Route::post('/courses/{course:slug}/enroll', [CoursesController::class, 'enroll'])
-     ->name('courses.enroll');
+// routes/web.php
+Route::post('/courses/enroll',[CoursesController::class, 'enrollStore'])
+    ->name('courses.enroll.store');
 
 // Blogs
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');

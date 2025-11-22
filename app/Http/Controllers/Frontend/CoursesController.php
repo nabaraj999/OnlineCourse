@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\PaymentMethods;
+use App\Models\Enrollment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CoursesController extends Controller
 {
@@ -48,7 +52,7 @@ class CoursesController extends Controller
             $course = $this->enhanceCourse($course);
 
             $payment_methods = PaymentMethods::where('active', true)
-                ->orderBy('method_name')
+                ->orderBy('sort_order')
                 ->get();
 
             return view('frontend.courses-show', compact('course', 'payment_methods'));
@@ -59,40 +63,70 @@ class CoursesController extends Controller
         }
     }
 
-    public function enroll(Request $request, Course $course)
+    // AJAX Enrollment via Modal (New Method)
+    public function enrollStore(Request $request)
     {
-        if ($course->active_status !== 'active') {
-            return back()->with('error', 'This course is no longer active.');
-        }
-
-        $availableSeats = $course->total_seats - $course->enrolled_seats;
-        if ($availableSeats <= 0) {
-            return back()->with('error', 'Sorry, this course is fully booked.');
-        }
-
         $request->validate([
-            'full_name'      => 'required|string|max:255',
-            'email'          => 'required|email|max:255',
-            'phone'          => 'required|string|regex:/^\+?[0-9]{10,15}$/',
-            'payment_method' => 'required|exists:payment_methods,id',
+            'course_id'        => 'required|exists:courses,id',
+            'full_name'        => 'required|string|max:255',
+            'email'            => 'required|email|max:255',
+            'phone'            => 'required|string|regex:/^\+?[0-9]{10,15}$/',
+            'reference_code'   => 'required|string|max:50|unique:enrollments,reference_code',
+            'payment_method_id'=> 'required|exists:payment_methods,id',
+            'screenshot'       => 'required|image|mimes:jpg,jpeg,png|max:5048',
         ]);
 
-        // Refresh enhanced data
-        $course = $this->enhanceCourse($course);
+        return DB::transaction(function () use ($request) {
+            $course = Course::findOrFail($request->course_id);
+            $course = $this->enhanceCourse($course); // Apply discount logic
 
-        $password = strtoupper(substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&'), 0, 12));
+            // Double-check seat availability with row lock
+            $availableSeats = $course->total_seats - $course->enrolled_seats;
+            if ($availableSeats <= 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Sorry, this course is now fully booked!'
+                ], 422);
+            }
 
-        $paymentMethod = PaymentMethods::findOrFail($request->payment_method);
+            // Generate secure password
+            $plainPassword = strtoupper(Str::random(8)) . rand(10, 99);
+            $screenshot = $request->file('screenshot');
+            $path = $screenshot->store('enrollments/screenshots', 'public');
 
-        // TODO: Save enrollment here later
+            $enrollment = Enrollment::create([
+                'course_id'         => $course->id,
+                'payment_method_id' => $request->payment_method_id,
+                'full_name'         => $request->full_name,
+                'email'             => $request->email,
+                'phone'             => $request->phone,
+                'reference_code'    => $request->reference_code,
+                'screenshot_path'   => $path,
+                'screenshot_url'    => Storage::url($path),
+                'amount_paid'       => $course->discounted_price_npr,
+                'password'          => Hash::make($plainPassword),
+                'plain_password'    => $plainPassword,
+                'status'            => 'pending',
+                'enrolled_at'       => now(),
+            ]);
 
-        return back()->with([
-            'success'          => 'Enrollment successful! Please complete your payment.',
-            'generated_password' => $password,
-            'payment_amount'   => number_format($course->discounted_price_npr, 2),
-            'payment_method'   => $paymentMethod->method_name .
-                                 ($paymentMethod->account_holder ? ' - ' . $paymentMethod->account_holder : '')
-        ]);
+            // Decrement seats safely
+            $course->increment('enrolled_seats');
+            // Or if you have available_seats column:
+            // $course->decrement('available_seats');
+
+            Log::info("New enrollment created", [
+                'enrollment_id' => $enrollment->id,
+                'course' => $course->title,
+                'student' => $request->full_name
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Enrollment successful! Your account is created.',
+                'plain_password' => $plainPassword
+            ]);
+        });
     }
 
     /**
@@ -106,7 +140,9 @@ class CoursesController extends Controller
         $course->available_seats = $course->total_seats - $course->enrolled_seats;
         $course->duration_days   = $this->calculateDuration($course);
         $course->original_price_npr = $course->price;
-        $course->photo_path      = $course->photo ? Storage::url($course->photo) : asset('images/courses/default.jpg');
+        $course->photo_path = $course->photo
+            ? Storage::url($course->photo)
+            : asset('images/courses/default.jpg');
 
         // Discount logic
         $discountPercentage = 0;
@@ -125,12 +161,9 @@ class CoursesController extends Controller
 
         $course->active_discount = $discountPercentage > 0;
         $course->discount_percentage_active = $discountPercentage;
-
-        if ($discountPercentage > 0) {
-            $course->discounted_price_npr = round($course->price * (1 - $discountPercentage / 100), 2);
-        } else {
-            $course->discounted_price_npr = $course->price;
-        }
+        $course->discounted_price_npr = $discountPercentage > 0
+            ? round($course->price * (1 - $discountPercentage / 100), 0)
+            : $course->price;
 
         return $course;
     }
@@ -142,6 +175,6 @@ class CoursesController extends Controller
         $start = Carbon::parse($course->start_date);
         $end   = $course->end_date ? Carbon::parse($course->end_date) : $start;
 
-        return $start->diffInDays($end) + 1; // inclusive
+        return $start->diffInDays($end) + 1;
     }
 }
