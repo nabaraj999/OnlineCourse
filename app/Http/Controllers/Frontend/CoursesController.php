@@ -18,6 +18,25 @@ use Illuminate\Validation\ValidationException;
 
 class CoursesController extends Controller
 {
+    public function index()
+    {
+        try {
+            $courses = Cache::remember('frontend_courses_active', 600, function () {
+                return Course::with(['teacher:id,name', 'company:id,name'])
+                    ->where('active_status', 'active')
+                    ->orderByDesc('id')
+                    ->get()
+                    ->map([$this, 'enhanceCourse']);
+            });
+
+            return view('frontend.courses', compact('courses'));
+        } catch (\Exception $e) {
+            Log::error('CoursesController@index error: ' . $e->getMessage());
+            return redirect()->route('home')->with('error', 'Failed to load courses.');
+        }
+    }
+
+    
     public function show($slug)
     {
         try {
