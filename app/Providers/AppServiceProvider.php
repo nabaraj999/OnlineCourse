@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use App\Models\Enrollment;
 use App\Models\Teacher;
+use App\Observers\EnrollmentObserver;
 use App\Observers\TeacherObserver;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
@@ -31,6 +33,8 @@ class AppServiceProvider extends ServiceProvider
 
         Model::unguard();
         Teacher::observe(TeacherObserver::class);
+        Enrollment::observe(EnrollmentObserver::class);
+
 
     }
 }

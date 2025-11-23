@@ -9,16 +9,16 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class TeacherApprovalNotification extends Mailable
+class EnrollmentApprovelNotification extends Mailable
 {
     use Queueable, SerializesModels;
-    public $Teacher;
+    public $enrollment;
     /**
      * Create a new message instance.
      */
-    public function __construct($Teacher)
+    public function __construct($enrollment)
     {
-        $this->Teacher = $Teacher;
+        $this->enrollment = $enrollment;
     }
 
     /**
@@ -27,7 +27,7 @@ class TeacherApprovalNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Teacher Approval Notification',
+            subject: 'Enrollment Approvel Notification',
         );
     }
 
@@ -37,7 +37,7 @@ class TeacherApprovalNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.TeacherApprovalNotification',
+            view: 'mail.EnrollmentApprovelNotification',
         );
     }
 
