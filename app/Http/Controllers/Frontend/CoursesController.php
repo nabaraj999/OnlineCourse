@@ -18,24 +18,6 @@ use Illuminate\Validation\ValidationException;
 
 class CoursesController extends Controller
 {
-    public function index()
-    {
-        try {
-            $courses = Cache::remember('frontend_courses_active', 600, function () {
-                return Course::with(['teacher:id,name', 'company:id,name'])
-                    ->where('active_status', 'active')
-                    ->orderByDesc('id')
-                    ->get()
-                    ->map([$this, 'enhanceCourse']);
-            });
-
-            return view('frontend.courses', compact('courses'));
-        } catch (\Exception $e) {
-            Log::error('CoursesController@index error: ' . $e->getMessage());
-            return redirect()->route('home')->with('error', 'Failed to load courses.');
-        }
-    }
-
     public function show($slug)
     {
         try {
@@ -50,7 +32,16 @@ class CoursesController extends Controller
                 ->orderBy('sort_order')
                 ->get();
 
-            return view('frontend.courses-show', compact('course', 'payment_methods'));
+            // Check if current user/email/phone has pending enrollment
+            $hasPending = false;
+            if (auth()->check()) {
+                $hasPending = Enrollment::where('course_id', $course->id)
+                    ->where('email', auth()->user()->email)
+                    ->where('status', 'pending')
+                    ->exists();
+            }
+
+            return view('frontend.courses-show', compact('course', 'payment_methods', 'hasPending'));
         } catch (\Exception $e) {
             Log::error("Course show error [slug: $slug]: " . $e->getMessage());
             return redirect()->route('courses.index')
@@ -58,7 +49,7 @@ class CoursesController extends Controller
         }
     }
 
-    // FINAL & BEST VERSION OF ENROLL STORE
+    // FINAL ENROLL STORE - PENDING ONLY (SEAT RESERVED ON APPROVAL)
     public function enrollStore(Request $request)
     {
         $request->validate([
@@ -66,58 +57,63 @@ class CoursesController extends Controller
             'full_name'         => 'required|string|max:255',
             'email'             => 'required|email|max:255',
             'phone'             => 'required|string|regex:/^\+?[0-9]{10,15}$/',
-            'reference_code'    => 'required|string|max:50',
+            'reference_code'    => 'required|string|max:50|unique:enrollments,reference_code',
             'payment_method_id' => 'required|exists:payment_methods,id',
             'screenshot'        => 'required|image|mimes:jpg,jpeg,png|max:5048',
         ]);
 
         return DB::transaction(function () use ($request) {
-            // Lock the course row to prevent race condition
             $course = Course::where('id', $request->course_id)
                 ->where('active_status', 'active')
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            // Re-apply discount logic (important after lock)
             $course = $this->enhanceCourse($course);
 
-            // Check available seats
-            $availableSeats = $course->total_seats - $course->enrolled_seats;
-
-            if ($availableSeats <= 0) {
+            // Check if seats are actually available (only approved count)
+            if ($course->total_seats <= $course->enrolled_seats) {
                 throw ValidationException::withMessages([
-                    'course_id' => 'Sorry, this course is now fully booked!'
+                    'course_id' => 'Sorry, this course is fully booked!'
                 ]);
             }
 
-            // Optional: Prevent duplicate enrollment (recommended)
-            $existing = Enrollment::where('course_id', $course->id)
-                ->whereIn('email', [$request->email])
-                ->orWhere('phone', $request->phone)
-                ->first();
+            // Prevent multiple approved enrollments
+            $alreadyApproved = Enrollment::where('course_id', $course->id)
+                ->where('status', 'approved')
+                ->where(function ($q) use ($request) {
+                    $q->where('email', $request->email)
+                      ->orWhere('phone', $request->phone);
+                })->exists();
 
-            if ($existing) {
+            if ($alreadyApproved) {
                 throw ValidationException::withMessages([
-                    'email' => 'You have already enrolled in this course.'
+                    'email' => 'You are already enrolled and approved in this course!'
                 ]);
             }
 
-            // Check reference code uniqueness
-            if (Enrollment::where('reference_code', $request->reference_code)->exists()) {
+            // Allow only ONE pending enrollment
+            $hasPending = Enrollment::where('course_id', $course->id)
+                ->where('status', 'pending')
+                ->where(function ($q) use ($request) {
+                    $q->where('email', $request->email)
+                      ->orWhere('phone', $request->phone);
+                })->exists();
+
+            if ($hasPending) {
                 throw ValidationException::withMessages([
-                    'reference_code' => 'This transaction reference has already been used.'
+                    'email' => 'You already have a pending enrollment. Please wait for approval or contact support.'
                 ]);
             }
 
-            // Generate strong random password
-            $plainPassword = strtoupper(Str::random(6)) . rand(10, 99);
-
-            // Store screenshot
+            // Upload screenshot
             $screenshot = $request->file('screenshot');
-            $filename = time() . '_' . $request->reference_code . '.' . $screenshot->getClientOriginalExtension();
+            $filename = time() . '_' . Str::random(10) . '.' . $screenshot->getClientOriginalExtension();
             $path = $screenshot->storeAs('enrollments/screenshots', $filename, 'public');
 
-            // Create enrollment
+            // Generate password
+            $plainPassword = strtoupper(Str::random(8));
+
+            // Create PENDING enrollment (DO NOT increment seats yet!)
             $enrollment = Enrollment::create([
                 'course_id'         => $course->id,
                 'payment_method_id' => $request->payment_method_id,
@@ -134,21 +130,17 @@ class CoursesController extends Controller
                 'enrolled_at'       => now(),
             ]);
 
-            // Atomically increment enrolled seats
-            $course->increment('enrolled_seats');
-
-            Log::info('New enrollment created', [
-                'enrollment_id' => $enrollment->id,
-                'course'        => $course->title,
-                'student'       => $request->full_name,
-                'email'         => $request->email,
+            Log::info('New pending enrollment', [
+                'id' => $enrollment->id,
+                'course' => $course->title,
+                'name' => $request->full_name
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Enrollment submitted successfully! Your account has been created.',
+                'message' => 'Enrollment submitted! We will verify your payment and approve within 24 hours.',
                 'plain_password' => $plainPassword,
-                'enrollment_id' => $enrollment->id
+                'note' => 'Your seat will be confirmed after admin approval.'
             ]);
         });
     }
@@ -165,14 +157,9 @@ class CoursesController extends Controller
             : asset('images/courses/default.jpg');
 
         $discountPercentage = 0;
-        if (
-            $course->discount_percentage > 0 &&
-            $course->discount_valid_from &&
-            $course->discount_valid_to
-        ) {
+        if ($course->discount_percentage > 0 && $course->discount_valid_from && $course->discount_valid_to) {
             $from = Carbon::parse($course->discount_valid_from);
             $to   = Carbon::parse($course->discount_valid_to)->endOfDay();
-
             if ($now->between($from, $to)) {
                 $discountPercentage = (float) $course->discount_percentage;
             }
@@ -190,10 +177,8 @@ class CoursesController extends Controller
     private function calculateDuration(Course $course): int
     {
         if (!$course->start_date) return 0;
-
         $start = Carbon::parse($course->start_date);
         $end   = $course->end_date ? Carbon::parse($course->end_date) : $start;
-
         return $start->diffInDays($end) + 1;
     }
 }
