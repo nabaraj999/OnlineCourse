@@ -36,7 +36,7 @@ class CoursesController extends Controller
         }
     }
 
-    
+
     public function show($slug)
     {
         try {
@@ -101,7 +101,7 @@ class CoursesController extends Controller
                 ->where('status', 'approved')
                 ->where(function ($q) use ($request) {
                     $q->where('email', $request->email)
-                      ->orWhere('phone', $request->phone);
+                        ->orWhere('phone', $request->phone);
                 })->exists();
 
             if ($alreadyApproved) {
@@ -115,7 +115,7 @@ class CoursesController extends Controller
                 ->where('status', 'pending')
                 ->where(function ($q) use ($request) {
                     $q->where('email', $request->email)
-                      ->orWhere('phone', $request->phone);
+                        ->orWhere('phone', $request->phone);
                 })->exists();
 
             if ($hasPending) {
