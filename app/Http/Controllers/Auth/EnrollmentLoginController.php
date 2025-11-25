@@ -2,54 +2,59 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;  // ← THIS MUST BE THIS LINE
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
-class EnrollmentLoginController extends Controller  // ← MUST extend Controller
+class EnrollmentLoginController extends Controller
 {
-    public function __construct()
-    {
-        if (method_exists($this, 'middleware')) {
-            $this->middleware('guest')->except('logout');
-        }
-    }
+    // Optional: only show login page to guests (safe even if middleware() doesn't exist)
+    // public function __construct()
+    // {
+    //     $this->middleware('guest:web')->except('logout');
+    // }
 
+    // Show login form
     public function showLoginForm()
     {
         return view('auth.enrollment-login');
     }
 
-    public function login(Request $request)
+    // ←←← THIS IS THE ONLY METHOD NAME THAT MATTERS ←←←
+    public function login(Request $request)   // ← Must be "login", NOT "studentlogin"
     {
         $request->validate([
-            'login' => 'required|string',
+            'login'    => 'required|string',
             'password' => 'required|string',
         ]);
 
         $field = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'reference_code';
 
-        if (Auth::attempt([$field => $request->login, 'password' => $request->password], $request->filled('remember'))) {
+        if (Auth::guard('web')->attempt([
+            $field     => $request->login,
+            'password' => $request->password
+        ], $request->filled('remember'))) {
 
-            $user = Auth::user();
+            $user = Auth::guard('web')->user();
 
             if ($user->status !== 'approved') {
-                Auth::logout();
-                return back()->withErrors(['login' => 'Your account is not approved yet.']);
+                Auth::guard('web')->logout();
+                return back()->withErrors(['login' => 'Your enrollment is pending approval.']);
             }
 
-            return redirect()->intended('/student/dashboard');
+            // FINAL FIX: NO intended() → go straight to dashboard
+            return redirect('/student/dashboard');
         }
 
-        return back()->withErrors(['login' => 'Invalid credentials.']);
+        return back()->withErrors(['login' => 'Email/Reference Code or password is incorrect.']);
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }
