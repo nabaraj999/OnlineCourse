@@ -69,7 +69,7 @@
                         <i class="fas fa-search text-sm sm:text-base"></i>
                     </button>
                 </div>
-                <a href="#"
+                <a href="{{ route('login') }}"
                     class="bg-secondary hover:bg-opacity-90 text-white px-4 py-2 rounded-lg font-medium transition duration-300 shadow-md text-sm sm:text-base">
                     Student Portal
                 </a>

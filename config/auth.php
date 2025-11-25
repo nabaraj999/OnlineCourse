@@ -41,7 +41,7 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'enrollments',
         ],
 
         'admin' => [
@@ -73,9 +73,9 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'enrollments' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model' => env('AUTH_MODEL', App\Models\Enrollment::class),
         ],
 
         'admins' => [

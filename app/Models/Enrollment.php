@@ -2,12 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
+use Illuminate\Foundation\Auth\User as AuthenticatableBase;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
-class Enrollment extends Model
+class Enrollment extends AuthenticatableBase implements Authenticatable
 {
+    use AuthenticatableTrait, Notifiable;
+
+    protected $table = 'enrollments'; // Important if table name ≠ class name
+
     protected $fillable = [
         'course_id',
         'payment_method_id',
@@ -25,7 +33,8 @@ class Enrollment extends Model
     ];
 
     protected $hidden = [
-        'password', // Never expose hashed password
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
@@ -47,17 +56,10 @@ class Enrollment extends Model
         return $this->belongsTo(PaymentMethods::class, 'payment_method_id');
     }
 
-    // Optional: if you have a User model for students later
-    // public function user(): BelongsTo
-    // {
-    //     return $this->belongsTo(User::class, 'email', 'email');
-    // }
-
     // ==============================================================
     // ACCESSORS & MUTATORS
     // ==============================================================
 
-    // Auto generate full screenshot URL
     public function getScreenshotUrlAttribute($value)
     {
         if ($value) {
@@ -69,13 +71,11 @@ class Enrollment extends Model
             : null;
     }
 
-    // Optional: Format amount with NPR
     public function getFormattedAmountAttribute(): string
     {
         return 'NPR ' . number_format($this->amount_paid);
     }
 
-    // Optional: Status badge text
     public function getStatusBadgeAttribute(): string
     {
         return match ($this->status) {
@@ -85,7 +85,6 @@ class Enrollment extends Model
         };
     }
 
-    // Optional: Status color for frontend
     public function getStatusColorAttribute(): string
     {
         return match ($this->status) {
@@ -96,7 +95,7 @@ class Enrollment extends Model
     }
 
     // ==============================================================
-    // SCOPES (Optional but useful)
+    // SCOPES
     // ==============================================================
 
     public function scopePending($query)
@@ -112,5 +111,10 @@ class Enrollment extends Model
     public function scopeForCourse($query, $courseId)
     {
         return $query->where('course_id', $courseId);
+    }
+
+    public function canLogIn(): bool
+    {
+        return $this->status === 'approved';
     }
 }

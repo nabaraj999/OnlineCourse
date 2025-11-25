@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\EnrollmentLoginController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\EnrollmentController;
@@ -40,3 +41,15 @@ Route::post('/courses/enroll',[CoursesController::class, 'enrollStore'])
 // Blogs
 Route::get('/blogs', [BlogController::class, 'index'])->name('blogs.index');
 Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show');
+
+/// routes/web.php
+
+Route::get('/login', [EnrollmentLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [EnrollmentLoginController::class, 'login']);
+Route::post('/logout', [EnrollmentLoginController::class, 'logout'])->name('logout')->middleware('auth:web');
+
+Route::middleware('auth:web')->group(function () {
+    Route::get('/student/dashboard', function () {
+        return view('student.dashboard');
+    })->name('student.dashboard');
+});
