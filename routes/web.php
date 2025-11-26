@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\CoursesController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PrivacyPolicyeController; // Consider renaming to PrivacyPolicyController
+use App\Http\Controllers\Student\StudentDashboardController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
@@ -48,8 +49,8 @@ Route::get('/login', [EnrollmentLoginController::class, 'showLoginForm'])->name(
 Route::post('/login', [EnrollmentLoginController::class, 'login']);
 Route::post('/logout', [EnrollmentLoginController::class, 'logout'])->name('logout')->middleware('auth:web');
 
+// routes/web.php
 Route::middleware('auth:web')->group(function () {
-    Route::get('/student/dashboard', function () {
-        return view('student.dashboard');
-    })->name('student.dashboard');
+    Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
+        ->name('student.dashboard');
 });
