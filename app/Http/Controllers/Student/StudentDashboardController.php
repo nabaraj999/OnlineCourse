@@ -10,23 +10,22 @@ class StudentDashboardController extends Controller
 {
     public function index()
     {
-        // Get the currently logged-in student (from enrollments table)
+        // Get the authenticated student (assuming you're guarding with 'web' and User model has student info)
         $student = Auth::guard('web')->user();
 
-        // If somehow not logged in (shouldn't happen due to middleware)
         if (!$student) {
             Auth::guard('web')->logout();
             return redirect()->route('student.login')->with('error', 'Please log in again.');
         }
 
-        // Only count APPROVED enrollments
+        // Fetch approved enrollment count
         $enrolledCoursesCount = Enrollment::where('email', $student->email)
             ->where('status', 'approved')
             ->count();
 
-        // Recent activities: last 5 enrollment actions for this student
+        // Recent activities
         $recentActivities = Enrollment::where('email', $student->email)
-            ->with('course') // make sure you have ->belongsTo(Course::class) in Enrollment model
+            ->with('course')
             ->latest('enrolled_at')
             ->take(6)
             ->get()
@@ -55,15 +54,25 @@ class StudentDashboardController extends Controller
 
                 return [
                     'message' => $message,
-                    'time'    => $enrollment->enrolled_at->diffForHumans(), // e.g., "2 hours ago"
+                    'time'    => $enrollment->enrolled_at?->diffForHumans() ?? 'Just now',
                     'color'   => $color,
                 ];
             });
 
-        // Pass data to Blade view
+        // Optional: Get student's department from first approved enrollment or user profile
+        $department = optional(Enrollment::where('email', $student->email)
+            ->where('status', 'approved')
+            ->with('course')
+            ->first()?->course)?->department ?? $student->department ?? 'Student';
+
+        // Or if you have a `program` or `department` column directly on users table:
+        // $department = $student->department ?? $student->program ?? 'General Studies';
+
         return view('student.dashboard', compact(
+            'student',
             'enrolledCoursesCount',
-            'recentActivities'
+            'recentActivities',
+            'department'
         ));
     }
 }
