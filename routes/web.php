@@ -11,6 +11,7 @@ use App\Http\Controllers\PrivacyPolicyeController; // Consider renaming to Priva
 use App\Http\Controllers\Student\MyCoursesController;
 use App\Http\Controllers\Student\PaymentReceiptController;
 use App\Http\Controllers\Student\StudentDashboardController;
+use App\Http\Controllers\Student\SuggestionController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +57,7 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
         ->name('student.dashboard');
 
-  Route::get('/my-courses', [MyCoursesController::class, 'index'])
+Route::get('/my-courses', [MyCoursesController::class, 'index'])
          ->name('student.my-courses');
 
 Route::get('/payment-receipts', PaymentReceiptController::class)
@@ -65,6 +66,12 @@ Route::get('/payment-receipts', PaymentReceiptController::class)
 Route::get('/receipt/{enrollment}', [PaymentReceiptController::class, 'show'])
          ->name('student.receipt.show');
 
-    Route::get('/receipt/{enrollment}/pdf', [PaymentReceiptController::class, 'pdf'])
+Route::get('/receipt/{enrollment}/pdf', [PaymentReceiptController::class, 'pdf'])
          ->name('student.receipt.pdf');
+
+Route::get('/suggestions', [SuggestionController::class, 'index'])
+         ->name('student.suggestions.index');
+
+Route::post('/suggestions', [SuggestionController::class, 'store'])
+         ->name('student.suggestions.store');
 });

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as AuthenticatableBase;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 class Enrollment extends AuthenticatableBase implements Authenticatable
@@ -124,4 +125,12 @@ class Enrollment extends AuthenticatableBase implements Authenticatable
         // OR if you have a proper user_id foreign key:
         // return $this->hasMany(Enrollment::class);
     }
+
+    public function suggestions(): HasMany
+    {
+        return $this->hasMany(Suggestion::class, 'enrollment_id');
+        // or if your column is enrollment_id → 'enrollment_id'
+    }
+
+
 }
