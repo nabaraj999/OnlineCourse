@@ -117,4 +117,11 @@ class Enrollment extends AuthenticatableBase implements Authenticatable
     {
         return $this->status === 'approved';
     }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'email', 'email');
+        // OR if you have a proper user_id foreign key:
+        // return $this->hasMany(Enrollment::class);
+    }
 }

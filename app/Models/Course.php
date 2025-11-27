@@ -12,6 +12,9 @@ class Course extends Model
     ];
 
      protected $casts = [
+        'start_date' => 'date:d M Y',   // optional: format on retrieve
+            'end_date'   => 'date:d M Y',
+            'price'      => 'decimal:2',
         'photo' => 'string', // Ensure photo is stored as a string (path)
         'syllabus' => 'array', // Cast syllabus to array for easier handling
     ];

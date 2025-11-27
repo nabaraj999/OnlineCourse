@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\CoursesController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PrivacyPolicyeController; // Consider renaming to PrivacyPolicyController
+use App\Http\Controllers\Student\MyCoursesController;
 use App\Http\Controllers\Student\StudentDashboardController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
@@ -53,4 +54,7 @@ Route::post('/logout', [EnrollmentLoginController::class, 'logout'])->name('logo
 Route::middleware('auth:web')->group(function () {
     Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
         ->name('student.dashboard');
+
+  Route::get('/my-courses', [MyCoursesController::class, 'index'])
+         ->name('student.my-courses');
 });
