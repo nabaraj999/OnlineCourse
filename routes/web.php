@@ -9,6 +9,7 @@ use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PrivacyPolicyeController; // Consider renaming to PrivacyPolicyController
 use App\Http\Controllers\Student\MyCoursesController;
+use App\Http\Controllers\Student\PaymentReceiptController;
 use App\Http\Controllers\Student\StudentDashboardController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
@@ -57,4 +58,13 @@ Route::middleware('auth:web')->group(function () {
 
   Route::get('/my-courses', [MyCoursesController::class, 'index'])
          ->name('student.my-courses');
+
+Route::get('/payment-receipts', PaymentReceiptController::class)
+         ->name('student.payment-receipts');
+
+Route::get('/receipt/{enrollment}', [PaymentReceiptController::class, 'show'])
+         ->name('student.receipt.show');
+
+    Route::get('/receipt/{enrollment}/pdf', [PaymentReceiptController::class, 'pdf'])
+         ->name('student.receipt.pdf');
 });

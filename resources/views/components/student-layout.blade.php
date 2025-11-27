@@ -94,7 +94,7 @@
 
         <!-- Payment Receipt -->
         <li>
-            <a href="#"
+            <a href="{{ route('student.payment-receipts') }}"
                class="flex items-center space-x-3 p-3 rounded-lg hover:bg-white hover:bg-opacity-10 ">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
