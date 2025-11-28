@@ -132,5 +132,15 @@ class Enrollment extends AuthenticatableBase implements Authenticatable
         // or if your column is enrollment_id → 'enrollment_id'
     }
 
+// app/Models/Enrollment.php
+public function certificates()
+{
+    return $this->hasMany(Certificate::class);
+}
 
+public function courses()
+{
+    return $this->belongsToMany(Course::class, 'enrollments', 'id', 'course_id')
+                ->withPivot('status', 'enrolled_at');
+}
 }

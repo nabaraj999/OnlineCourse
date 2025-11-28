@@ -10,6 +10,7 @@ use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PrivacyPolicyeController; // Consider renaming to PrivacyPolicyController
 use App\Http\Controllers\Student\MyCoursesController;
 use App\Http\Controllers\Student\PaymentReceiptController;
+use App\Http\Controllers\Student\ProfileController;
 use App\Http\Controllers\Student\StudentDashboardController;
 use App\Http\Controllers\Student\SuggestionController;
 use App\Http\Controllers\TermsController;
@@ -74,4 +75,10 @@ Route::get('/suggestions', [SuggestionController::class, 'index'])
 
 Route::post('/suggestions', [SuggestionController::class, 'store'])
          ->name('student.suggestions.store');
+
+Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
+Route::post('/profile', [ProfileController::class, 'update'])->name('student.profile.update');
+
+Route::get('/certificates', [CertificateController::class, 'index'])
+         ->name('certificates');
 });

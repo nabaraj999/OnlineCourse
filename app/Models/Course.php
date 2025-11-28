@@ -28,4 +28,12 @@ class Course extends Model
     {
         return $this->belongsTo(Company::class);
     }
+    public function certificates()
+{
+    return $this->hasMany(Certificate::class);
+}
+public function enrollments()
+{
+    return $this->hasMany(Enrollment::class);
+}
 }
