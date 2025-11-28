@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
+use PDF;
 
 class PaymentReceiptController extends Controller
 {
-    // Add this line — THIS IS REQUIRED
-    public function __invoke()
+    public function index()
     {
-        $receipts = Auth::user()->enrollments()
+        $receipts = Auth::user()->allEnrollments()  // ← Fixed: was enrollments()
             ->where('status', 'approved')
             ->with('course')
             ->latest('enrolled_at')
@@ -18,42 +19,31 @@ class PaymentReceiptController extends Controller
 
         return view('student.payment-receipts', compact('receipts'));
     }
-    public function index()
-{
-    $receipts = Auth::user()->enrollments()
-        ->where('status', 'approved')
-        ->with('course')
-        ->latest('enrolled_at')
-        ->get();
 
-    return view('student.payment-receipts', compact('receipts'));
-}
+    public function show($enrollmentId)
+    {
+        $receipt = Auth::user()->allEnrollments()
+            ->where('status', 'approved')
+            ->with('course')
+            ->findOrFail($enrollmentId);
 
-public function show($enrollmentId)
-{
-    $receipt = Auth::user()->enrollments()
-        ->where('status', 'approved')
-        ->with('course')
-        ->findOrFail($enrollmentId);
+        $company = \App\Models\Company::firstOrFail();
 
-    $company = \App\Models\Company::first();
+        return view('student.receipt-print', compact('receipt', 'company'));
+    }
 
-    return view('student.receipt-print', compact('receipt', 'company'));
-}
+    public function pdf($enrollmentId)
+    {
+        $receipt = Auth::user()->allEnrollments()
+            ->where('status', 'approved')
+            ->with('course')
+            ->findOrFail($enrollmentId);
 
-public function pdf($enrollmentId)
-{
-    $receipt = Auth::user()->enrollments()
-        ->where('status', 'approved')
-        ->with('course')
-        ->findOrFail($enrollmentId);
+        $company = \App\Models\Company::firstOrFail();
 
-    $company = \App\Models\Company::first();
+        $pdf = FacadePdf::loadView('student.receipt-print', compact('receipt', 'company'));
+        $pdf->setPaper('A4', 'portrait');
 
-    // We'll use DOMPDF (install below)
-    $pdf = \PDF::loadView('student.receipt-print', compact('receipt', 'company'));
-    $pdf->setPaper('A4', 'portrait');
-
-    return $pdf->download('Receipt_'.$receipt->reference_code.'.pdf');
-}
+        return $pdf->download('Receipt_'.$receipt->reference_code.'.pdf');
+    }
 }

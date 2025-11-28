@@ -8,6 +8,7 @@ use App\Http\Controllers\Frontend\CoursesController;
 use App\Http\Controllers\Frontend\PageController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\PrivacyPolicyeController; // Consider renaming to PrivacyPolicyController
+use App\Http\Controllers\Student\CertificateController;
 use App\Http\Controllers\Student\MyCoursesController;
 use App\Http\Controllers\Student\PaymentReceiptController;
 use App\Http\Controllers\Student\ProfileController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Student\StudentDashboardController;
 use App\Http\Controllers\Student\SuggestionController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\CertificateVerificationController;
 use Illuminate\Support\Facades\Route;
 
 // Home & Static Pages
@@ -51,7 +53,8 @@ Route::get('/blogs/{slug}', [BlogController::class, 'show'])->name('blogs.show')
 
 Route::get('/login', [EnrollmentLoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [EnrollmentLoginController::class, 'login']);
-Route::post('/logout', [EnrollmentLoginController::class, 'logout'])->name('logout')->middleware('auth:web');
+Route::post('/logout', [EnrollmentLoginController::class, 'logout'])
+    ->name('logout');
 
 // routes/web.php
 Route::middleware('auth:web')->group(function () {
@@ -61,14 +64,9 @@ Route::middleware('auth:web')->group(function () {
 Route::get('/my-courses', [MyCoursesController::class, 'index'])
          ->name('student.my-courses');
 
-Route::get('/payment-receipts', PaymentReceiptController::class)
-         ->name('student.payment-receipts');
-
-Route::get('/receipt/{enrollment}', [PaymentReceiptController::class, 'show'])
-         ->name('student.receipt.show');
-
-Route::get('/receipt/{enrollment}/pdf', [PaymentReceiptController::class, 'pdf'])
-         ->name('student.receipt.pdf');
+Route::get('/payment-receipts', [PaymentReceiptController::class, 'index'])->name('student.payment-receipts');
+    Route::get('/receipt/{enrollmentId}', [PaymentReceiptController::class, 'show'])->name('student.receipt.show');
+    Route::get('/receipt/{enrollmentId}/pdf', [PaymentReceiptController::class, 'pdf'])->name('student.receipt.pdf');
 
 Route::get('/suggestions', [SuggestionController::class, 'index'])
          ->name('student.suggestions.index');
@@ -79,6 +77,9 @@ Route::post('/suggestions', [SuggestionController::class, 'store'])
 Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
 Route::post('/profile', [ProfileController::class, 'update'])->name('student.profile.update');
 
-Route::get('/certificates', [CertificateController::class, 'index'])
-         ->name('certificates');
+Route::get('/student/certificates', [CertificateController::class, 'index'])
+        ->name('student.certificates.index');
+
+    Route::get('/certificate/{id}/download', [CertificateController::class, 'download'])
+        ->name('certificate.download');
 });

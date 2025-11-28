@@ -50,4 +50,13 @@ class User extends Authenticatable
 {
     return $this->hasMany(suggestion::class);
 }
+public function enrollments()
+{
+    return $this->hasMany(Enrollment::class, 'student_id');
+}
+
+public function certificates()
+{
+    return $this->hasManyThrough(Certificate::class, Enrollment::class);
+}
 }
