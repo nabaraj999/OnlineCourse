@@ -37,12 +37,12 @@ Route::get('/mentors', [MentorController::class, 'index'])->name('mentors.index'
 // routes/web.php
 
 Route::get('/courses', [CoursesController::class, 'index'])
-     ->name('courses.index');
+    ->name('courses.index');
 
 Route::get('/courses/{course:slug}', [CoursesController::class, 'show'])
-     ->name('courses.show');
+    ->name('courses.show');
 // routes/web.php
-Route::post('/courses/enroll',[CoursesController::class, 'enrollStore'])
+Route::post('/courses/enroll', [CoursesController::class, 'enrollStore'])
     ->name('courses.enroll.store');
 
 // Blogs
@@ -61,23 +61,23 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
         ->name('student.dashboard');
 
-Route::get('/my-courses', [MyCoursesController::class, 'index'])
-         ->name('student.my-courses');
+    Route::get('/my-courses', [MyCoursesController::class, 'index'])
+        ->name('student.my-courses');
 
-Route::get('/payment-receipts', [PaymentReceiptController::class, 'index'])->name('student.payment-receipts');
+    Route::get('/payment-receipts', [PaymentReceiptController::class, 'index'])->name('student.payment-receipts');
     Route::get('/receipt/{enrollmentId}', [PaymentReceiptController::class, 'show'])->name('student.receipt.show');
     Route::get('/receipt/{enrollmentId}/pdf', [PaymentReceiptController::class, 'pdf'])->name('student.receipt.pdf');
 
-Route::get('/suggestions', [SuggestionController::class, 'index'])
-         ->name('student.suggestions.index');
+    Route::get('/suggestions', [SuggestionController::class, 'index'])
+        ->name('student.suggestions.index');
 
-Route::post('/suggestions', [SuggestionController::class, 'store'])
-         ->name('student.suggestions.store');
+    Route::post('/suggestions', [SuggestionController::class, 'store'])
+        ->name('student.suggestions.store');
 
-Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
-Route::post('/profile', [ProfileController::class, 'update'])->name('student.profile.update');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('student.profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('student.profile.update');
 
-Route::get('/student/certificates', [CertificateController::class, 'index'])
+    Route::get('/student/certificates', [CertificateController::class, 'index'])
         ->name('student.certificates.index');
 
     Route::get('/certificate/{id}/download', [CertificateController::class, 'download'])

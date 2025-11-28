@@ -13,15 +13,15 @@ class MyCoursesController extends Controller
      * Display a listing of the resource.
      */
    public function index()
-    {
-        $enrollments = Auth::user()->enrollments()
-            ->where('status', 'approved')
-            ->with('course')
-            ->latest('enrolled_at')
-            ->get();
+{
+    $enrollments = Auth::user()->allEnrollments()
+        ->where('status', 'approved')
+        ->with('course')
+        ->latest('enrolled_at')
+        ->get();
 
-        return view('student.my-courses', compact('enrollments'));
-    }
+    return view('student.my-courses', compact('enrollments'));
+}
 
     /**
      * Show the form for creating a new resource.
