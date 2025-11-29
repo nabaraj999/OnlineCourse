@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class CertificateResource extends Resource
 {
@@ -21,6 +22,7 @@ class CertificateResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::BookOpen;
 
     protected static ?string $recordTitleAttribute = 'Certificate';
+     protected static string | UnitEnum | null $navigationGroup = 'Student Management';
      public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

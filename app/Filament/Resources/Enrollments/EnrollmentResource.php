@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class EnrollmentResource extends Resource
 {
@@ -30,7 +31,7 @@ class EnrollmentResource extends Resource
     {
         return EnrollmentForm::configure($schema);
     }
-
+ protected static string | UnitEnum | null $navigationGroup = 'Student Management';
     public static function table(Table $table): Table
     {
         return EnrollmentsTable::configure($table);

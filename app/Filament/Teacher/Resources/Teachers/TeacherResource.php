@@ -33,6 +33,7 @@ class TeacherResource extends Resource
     public static function getEloquentQuery(): Builder
     {
        return parent::getEloquentQuery()->where('id',Auth::guard('teacher')->user()->id);
+
     }
 
     public static function form(Schema $schema): Schema

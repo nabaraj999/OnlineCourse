@@ -73,4 +73,5 @@ class Enrollment extends AuthenticatableBase implements Authenticatable
     {
         return $this->status === 'approved';
     }
+    
 }
