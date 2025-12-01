@@ -17,6 +17,7 @@ use App\Http\Controllers\Student\SuggestionController;
 use App\Http\Controllers\TermsController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CertificateVerificationController;
+use App\Http\Controllers\Student\CourseDetailController;
 use Illuminate\Support\Facades\Route;
 
 // Home & Static Pages
@@ -63,6 +64,8 @@ Route::middleware('auth:web')->group(function () {
 
     Route::get('/my-courses', [MyCoursesController::class, 'index'])
         ->name('student.my-courses');
+    Route::get('/course/{course:slug}', [CourseDetailController::class, 'show'])
+         ->name('student.course.show');
 
     Route::get('/payment-receipts', [PaymentReceiptController::class, 'index'])->name('student.payment-receipts');
     Route::get('/receipt/{enrollmentId}', [PaymentReceiptController::class, 'show'])->name('student.receipt.show');

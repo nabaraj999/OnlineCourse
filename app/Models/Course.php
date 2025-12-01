@@ -37,18 +37,24 @@ public function enrollments()
     return $this->hasMany(Enrollment::class);
 }
 // In app/Models/Course.php
-public function resources()
-{
-    return $this->hasMany(CourseResource::class)
-                ->orderBy('resource_date')
-                ->orderBy('sort_order');
-}
+// public function resources()
+// {
+//     return $this->hasMany(CourseResource::class)
+//                 ->orderBy('resource_date')
+//                 ->orderBy('sort_order');
+// }
 
-public function publishedResources()
+// public function publishedResources()
+// {
+//     return $this->hasMany(CourseResource::class)
+//                 ->where('is_published', true)
+//                 ->orderBy('resource_date')
+//                 ->orderBy('sort_order');
+// }
+// app/Models/Course.php
+
+public function courseMaterials()
 {
-    return $this->hasMany(CourseResource::class)
-                ->where('is_published', true)
-                ->orderBy('resource_date')
-                ->orderBy('sort_order');
+    return $this->hasMany(CourseMaterial::class);
 }
 }
