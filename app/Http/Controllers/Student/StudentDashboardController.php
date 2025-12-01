@@ -1,29 +1,27 @@
 <?php
+// app/Http/Controllers/Student/StudentDashboardController.php
 
 namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Course;
 use App\Models\Enrollment;
+use App\Models\PaymentMethod;
+use App\Models\PaymentMethods;
+use Illuminate\Support\Facades\Auth;
 
 class StudentDashboardController extends Controller
 {
     public function index()
     {
-        // Get the authenticated student (assuming you're guarding with 'web' and User model has student info)
-        $student = Auth::guard('web')->user();
+        $student = Auth::user();
 
-        if (!$student) {
-            Auth::guard('web')->logout();
-            return redirect()->route('student.login')->with('error', 'Please log in again.');
-        }
-
-        // Fetch approved enrollment count
+        // 1. Enrolled Courses Count
         $enrolledCoursesCount = Enrollment::where('email', $student->email)
             ->where('status', 'approved')
             ->count();
 
-        // Recent activities
+        // 2. Recent Activities (Last 6 enrollments)
         $recentActivities = Enrollment::where('email', $student->email)
             ->with('course')
             ->latest('enrolled_at')
@@ -32,47 +30,47 @@ class StudentDashboardController extends Controller
             ->map(function ($enrollment) {
                 $courseName = $enrollment->course?->title ?? 'Unknown Course';
 
-                $message = '';
-                $color   = 'bg-gray-500';
-
-                switch ($enrollment->status) {
-                    case 'approved':
-                        $message = "Successfully enrolled in <strong>{$courseName}</strong>";
-                        $color   = 'bg-green-500';
-                        break;
-                    case 'pending':
-                        $message = "Enrollment request sent for <strong>{$courseName}</strong>";
-                        $color   = 'bg-yellow-500';
-                        break;
-                    case 'rejected':
-                        $message = "Enrollment rejected for <strong>{$courseName}</strong>";
-                        $color   = 'bg-red-500';
-                        break;
-                    default:
-                        $message = "Status updated: {$courseName}";
-                }
-
                 return [
-                    'message' => $message,
-                    'time'    => $enrollment->enrolled_at?->diffForHumans() ?? 'Just now',
-                    'color'   => $color,
+                    'message' => match ($enrollment->status) {
+                        'approved' => "Enrolled in <strong>{$courseName}</strong>",
+                        'pending'  => "Payment submitted for <strong>{$courseName}</strong>",
+                        'rejected' => "Enrollment rejected: <strong>{$courseName}</strong>",
+                        default    => "Status updated: {$courseName}"
+                    },
+                    'color' => match ($enrollment->status) {
+                        'approved' => 'bg-green-500',
+                        'pending'  => 'bg-yellow-500',
+                        'rejected' => 'bg-red-500',
+                        default    => 'bg-gray-500'
+                    },
+                    'time' => $enrollment->enrolled_at?->diffForHumans() ?? 'Just now'
                 ];
             });
 
-        // Optional: Get student's department from first approved enrollment or user profile
-        $department = optional(Enrollment::where('email', $student->email)
+        // 3. Available Courses (Not yet enrolled by this student)
+        $enrolledCourseIds = Enrollment::where('email', $student->email)
             ->where('status', 'approved')
-            ->with('course')
-            ->first()?->course)?->department ?? $student->department ?? 'Student';
+            ->pluck('course_id')
+            ->toArray();
 
-        // Or if you have a `program` or `department` column directly on users table:
-        // $department = $student->department ?? $student->program ?? 'General Studies';
+        $availableCourses = Course::where('active_status', 'active')
+            ->whereNotIn('id', $enrolledCourseIds)
+            ->with('teacher')
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // 4. Active Payment Methods
+        $paymentMethods = PaymentMethods::where('active', true)
+            ->orderBy('sort_order')
+            ->get();
 
         return view('student.dashboard', compact(
             'student',
             'enrolledCoursesCount',
             'recentActivities',
-            'department'
+            'availableCourses',
+            'paymentMethods'
         ));
     }
 }

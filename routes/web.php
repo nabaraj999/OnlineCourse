@@ -61,6 +61,9 @@ Route::post('/logout', [EnrollmentLoginController::class, 'logout'])
 Route::middleware('auth:web')->group(function () {
     Route::get('/student/dashboard', [StudentDashboardController::class, 'index'])
         ->name('student.dashboard');
+Route::get('/enroll/{course:slug}', [EnrollmentController::class, 'create'])
+     ->name('enroll.form');
+     Route::post('/enroll', [EnrollmentController::class, 'store'])->name('enroll.store');
 
     Route::get('/my-courses', [MyCoursesController::class, 'index'])
         ->name('student.my-courses');

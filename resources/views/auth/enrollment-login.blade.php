@@ -80,7 +80,7 @@
                     <label class="block text-primary font-semibold mb-2">Email or Reference Code</label>
                     <input type="text" name="login" value="{{ old('login') }}" required autofocus
                            class="w-full px-5 py-4 rounded-xl border-2 border-gray-200 focus:border-primary focus:outline-none transition-all duration-300 text-gray-800 placeholder-gray-400"
-                           placeholder="e.g. student@example.com or REF12345">
+                           placeholder="e.g. student@example.com">
                 </div>
 
                 <!-- Password -->
@@ -114,16 +114,9 @@
                     Don't have an account?
                     <a href="/" class="text-secondary font-bold hover:underline">Enroll Now →</a>
                 </p>
-                <p class="text-xs text-gray-500 mt-4">
-                    Use your registered <span class="font-mono bg-gray-100 px-2 py-1 rounded">Reference Code</span> or email
-                </p>
             </div>
         </div>
 
-        <!-- Footer Credit -->
-        <div class="text-center mt-8 text-gray-500 text-sm animate-fade-in" style="animation-delay: 0.6s;">
-            © {{ date('Y') }} OnlineCourse • Made with ❤️ for learners
-        </div>
     </div>
 </body>
 </html>
