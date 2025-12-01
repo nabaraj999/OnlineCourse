@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('course_resources', function (Blueprint $table) {
+        Schema::create('course_materials', function (Blueprint $table) {
            $table->id();
             $table->foreignId('course_id')
                   ->constrained('courses')
@@ -28,15 +28,15 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('description')->nullable();
-            $table->string('file_path')->nullable();        // Stored file
-            $table->text('external_url')->nullable();       // YouTube, Drive, etc.
-            $table->date('resource_date')->nullable();      // Class/day this belongs to
+            $table->string('file_path')->nullable();
+            $table->text('external_url')->nullable();
+            $table->date('resource_date')->nullable();
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_published')->default(true);
 
             $table->timestamps();
 
-            // Indexes for fast queries
+            // Indexes
             $table->index('course_id');
             $table->index('uploaded_by');
             $table->index('resource_date');
@@ -50,6 +50,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('course_resources');
+        Schema::dropIfExists('course_materials');
     }
 };
