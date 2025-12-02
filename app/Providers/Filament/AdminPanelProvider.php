@@ -48,7 +48,6 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem') // adjust as needed
 
             ->profile()
-            ->registration()
             ->login()
 
             ->colors([
@@ -62,8 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+
             ])
            ->middleware([
                 EncryptCookies::class,
