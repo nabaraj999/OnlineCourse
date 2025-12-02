@@ -48,8 +48,8 @@ class Admin extends Authenticatable implements FilamentUser
             'password' => 'hashed',
         ];
     }
-    public function canAccessPanel(Panel $panel): bool
+   public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return true; // or your logic: $this->is_super_admin, etc.
     }
 }
