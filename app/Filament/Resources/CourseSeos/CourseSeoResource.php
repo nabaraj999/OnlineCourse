@@ -13,14 +13,16 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class CourseSeoResource extends Resource
 {
     protected static ?string $model = CourseSeo::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::BookOpen;
 
     protected static ?string $recordTitleAttribute = 'CourseSeo';
+      protected static string | UnitEnum | null $navigationGroup = 'Seo Management';
 
     public static function form(Schema $schema): Schema
     {
