@@ -1,5 +1,6 @@
 <x-frontend-layout />
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 
 <!-- Header Section -->
 <header class="bg-primary text-white py-10">

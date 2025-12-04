@@ -1,4 +1,5 @@
    <x-frontend-layout />
+       <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
    <section id="courses" class="py-16 bg-primary bg-opacity-5">
        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Certificate - {{ $certificate->certificate_number }}</title>
+        <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
     <style>
         @page { size: A4 landscape; margin: 0; }
         * { margin: 0; padding: 0; box-sizing: border-box; }

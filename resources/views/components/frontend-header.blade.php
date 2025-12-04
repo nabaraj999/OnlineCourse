@@ -1,4 +1,6 @@
 <nav class="bg-white shadow-md fixed w-full z-50 top-0 left-0">
+
+
     <!-- Top Contact Bar -->
     <div class="bg-primary text-white text-xs sm:text-sm">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-4 py-3 sm:py-2">

@@ -1,6 +1,7 @@
 {{-- resources/views/enrollment/create.blade.php --}}
 
 <x-student-layout title="Enroll in {{ $course->title }}">
+        <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 
 <div class="max-w-3xl mx-auto py-12 px-4">
     <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">

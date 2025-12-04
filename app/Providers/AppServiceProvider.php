@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Company;
 use App\Models\Enrollment;
+use App\Models\Seo;
 use App\Models\Teacher;
 use App\Observers\EnrollmentObserver;
 use App\Observers\TeacherObserver;
@@ -27,6 +28,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::composer('*', function ($view) {
+            $seo = Seo::first(); // Fetch company data
+            //seo also
+
+            $view->with('seo', $seo);
+        });
+
         $company = Company::first();
         View::share(['company' => $company]);
 
@@ -34,7 +42,5 @@ class AppServiceProvider extends ServiceProvider
         Model::unguard();
         Teacher::observe(TeacherObserver::class);
         Enrollment::observe(EnrollmentObserver::class);
-
-
     }
 }

@@ -21,6 +21,7 @@
     }
 </style>
 <x-frontend-layout />
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 
 <body class="bg-lightBg text-gray-800 font-raleway">
     <!-- Header -->

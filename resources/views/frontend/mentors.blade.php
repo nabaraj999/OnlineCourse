@@ -1,6 +1,6 @@
 <x-frontend-layout />
 
-
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 <section id="mentors" class="py-10 bg-light font-raleway sm:py-16 md:py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Heading -->

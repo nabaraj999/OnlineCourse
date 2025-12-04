@@ -1,5 +1,5 @@
 <x-frontend-layout>
-
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="min-h-screen bg-gradient-to-br from-light via-white to-indigo-50 font-raleway py-12">

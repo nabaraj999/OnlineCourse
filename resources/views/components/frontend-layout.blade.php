@@ -5,6 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
+    <title>{{ $seo->title ?? 'Student Panel - ' . config('app.name') }}</title>
+    <meta name="description" content="{{ $seo->description ?? 'Access your courses, certificates, payments, and profile in your student dashboard.' }}">
+    <meta name="keywords" content="{{ $seo->keywords ?? 'student panel, online courses, learning, certificate, dashboard' }}">
+    <meta name="robots" content="{{ $seo->noindex ?? false ? 'noindex, nofollow' : 'index, follow' }}">
+
+    <link rel="canonical" href="{{ $seo->canonical_url ?? request()->url() }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ $seo->og_title ?? $seo->title ?? 'Student Panel' }}">
+    <meta property="og:description" content="{{ $seo->og_description ?? $seo->description ?? 'Manage your learning journey.' }}">
+    <meta property="og:url" content="{{ $seo->canonical_url ?? request()->url() }}">
+    <meta property="og:image" content="{{ $seo->og_image ? asset('storage/' . $seo->og_image) : asset('images/og-student-panel.jpg') }}">
+    <meta property="og:site_name" content="{{ config('app.name') }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="{{ $seo->twitter_card ?? 'summary_large_image' }}">
+    <meta name="twitter:title" content="{{ $seo->twitter_title ?? $seo->title ?? 'Student Panel' }}">
+    <meta name="twitter:description" content="{{ $seo->twitter_description ?? $seo->description }}">
+    <meta name="twitter:image" content="{{ $seo->twitter_image ? asset('storage/' . $seo->twitter_image) : asset('images/og-student-panel.jpg') }}">
+
+    {{-- Favicon (optional - add your own) --}}
     <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon) }}" alt="FinHedge Logo"
         class="h-auto w-auto">
     <meta name="csrf-token" content="{{ csrf_token() }}">

@@ -1,6 +1,6 @@
 {{-- resources/views/student/certificates/index.blade.php --}}
 <x-student-layout title="My Certificates">
-
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 <div class="max-w-5xl mx-auto py-12 px-6">
     <h1 class="text-4xl font-bold text-center text-primary mb-10">My Certificates</h1>
 

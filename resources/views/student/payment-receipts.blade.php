@@ -1,5 +1,5 @@
 <x-student-layout title="Payment Receipts">
-
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 <div class="max-w-5xl mx-auto py-8 px-6">
     <h1 class="text-3xl font-bold text-gray-900 mb-2">My Payment Receipts</h1>
     <p class="text-gray-600 mb-8">Click on any receipt to view and print</p>

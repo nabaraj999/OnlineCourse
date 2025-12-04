@@ -1,6 +1,7 @@
 {{-- resources/views/student/dashboard.blade.php --}}
 
 <x-student-layout title="Dashboard">
+    <link rel="icon" type="image/png/jpg" href="{{ Storage::url($company->favicon ?? 'default.png') }}" alt="FinHedge Logo" class="h-auto w-auto">
 
     <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
 
