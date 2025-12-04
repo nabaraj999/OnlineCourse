@@ -57,4 +57,8 @@ public function courseMaterials()
 {
     return $this->hasMany(CourseMaterial::class);
 }
+public function seo()
+{
+    return $this->hasOne(CourseSeo::class);
+}
 }
