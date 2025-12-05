@@ -4,8 +4,8 @@
    <section id="courses" class="py-16 bg-primary bg-opacity-5">
        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div class="text-center">
-               <h2 class="text-3xl font-bold text-primary">Popular Courses</h2>
-               <p class="mt-4 text-lg text-primary max-w-3xl mx-auto">
+               <h2 class="text-3xl font-bold text-white">Popular Courses</h2>
+               <p class="mt-4 text-lg text-white max-w-3xl mx-auto">
                    Discover our most popular courses designed to help you achieve your career goals
                </p>
            </div>

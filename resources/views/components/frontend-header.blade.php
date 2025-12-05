@@ -1,195 +1,170 @@
-<nav class="bg-white shadow-md fixed w-full z-50 top-0 left-0">
+<nav class="bg-white shadow-md fixed w-full top-0 z-50">
 
-
-    <!-- Top Contact Bar -->
+    <!-- TOP CONTACT BAR -->
     <div class="bg-primary text-white text-xs sm:text-sm">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-4 py-3 sm:py-2">
-            <!-- Left: Contact Info -->
-            <div class="flex flex-wrap space-x-3 sm:space-x-6 items-center">
-                <a href="mailto:{{ $company->email }}" class="hover:text-secondary flex items-center transition p-2">
-                    <i class="fas fa-envelope text-sm sm:text-base mr-1 sm:mr-2"></i>
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-2">
+            <!-- LEFT CONTACTS -->
+            <div class="flex items-center space-x-4">
+                <a href="mailto:{{ $company->email }}" class="flex items-center space-x-1 p-1 hover:text-secondary transition">
+                    <i class="fas fa-envelope"></i>
                     <span class="hidden sm:inline">{{ $company->email }}</span>
                 </a>
-                <a href="tel:{{ $company->phone_number }}" class="hover:text-secondary flex items-center transition p-2">
-                    <i class="fas fa-phone text-sm sm:text-base mr-1 sm:mr-2"></i>
+
+                <a href="tel:{{ $company->phone_number }}" class="flex items-center space-x-1 p-1 hover:text-secondary transition">
+                    <i class="fas fa-phone"></i>
                     <span class="hidden sm:inline">{{ $company->phone_number }}</span>
                 </a>
-                <a href="https://wa.me/{{ $company->whatsapp_number }}" target="_blank"
-                    class="hover:text-secondary flex items-center transition p-2">
-                    <i class="fab fa-whatsapp text-sm sm:text-base mr-1 sm:mr-2"></i>
+
+                <a href="https://wa.me/{{ $company->whatsapp_number }}" class="flex items-center p-1 hover:text-secondary transition">
+                    <i class="fab fa-whatsapp"></i>
                     <span class="hidden sm:inline">{{ $company->whatsapp_number }}</span>
-                </a>
-                <a href="viber://chat?number=%2B9779861404972"
-                    class="hover:text-secondary flex items-center transition p-2">
-                    <i class="fab fa-viber text-sm sm:text-base mr-1 sm:mr-2"></i>
-                    <span class="hidden sm:inline">{{ $company->viber_number }}</span>
                 </a>
             </div>
 
-            <!-- Right: Social Media -->
-            <div class="flex space-x-3 sm:space-x-4">
-                <a href="#" class="hover:text-secondary transition p-2">
-                    <i class="fab fa-facebook text-sm sm:text-base"></i>
-                </a>
-                <a href="#" class="hover:text-secondary transition p-2">
-                    <i class="fab fa-instagram text-sm sm:text-base"></i>
-                </a>
-                <a href="#" class="hover:text-secondary transition p-2">
-                    <i class="fab fa-youtube text-sm sm:text-base"></i>
-                </a>
+            <!-- SOCIAL ICONS -->
+            <div class="flex items-center space-x-3">
+                <a href="#" class="p-1 hover:text-secondary transition"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="p-1 hover:text-secondary transition"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="p-1 hover:text-secondary transition"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
     </div>
 
-    <!-- Main Navbar -->
+    <!-- MAIN NAVBAR -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16 sm:h-20">
-            <!-- Left: Logo + Menu -->
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    <a href="#">
-                        <img class="h-8 sm:h-10 w-auto" src="{{ Storage::url($company->logo) }}" alt="EduLearn Logo">
-                    </a>
-                </div>
-                <!-- Desktop Menu -->
-                <div class="hidden lg:ml-10 lg:flex lg:space-x-8">
-                    <a href="{{ route('home') }}" class="nav-link">Home</a>
-                    <a href="#testimonials" class="nav-link">Testimonials</a>
-                    <a href="{{ route('mentors.index') }}" class="nav-link">Mentors</a>
-                    <a href="{{ route('blogs.index') }}" class="nav-link">Blog</a>
-                    <a href="{{ route('courses.index') }}" class="nav-link">Courses</a>
-                </div>
+        <div class="flex justify-between items-center h-16 lg:h-20">
+
+            <!-- LOGO -->
+            <a href="{{ route('home') }}" class="flex items-center flex-shrink-0">
+                <img src="{{ Storage::url($company->logo) }}" alt="Logo" class="h-10 sm:h-12 w-auto">
+            </a>
+
+            <!-- DESKTOP MENU -->
+            <div class="hidden lg:flex items-center space-x-10">
+                <a href="{{ route('home') }}" class="nav-link">Home</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a href="{{ route('mentors.index') }}" class="nav-link">Mentors</a>
+                <a href="{{ route('blogs.index') }}" class="nav-link">Blog</a>
+                <a href="{{ route('courses.index') }}" class="nav-link">Courses</a>
             </div>
 
-            <!-- Right: Search + Student Portal -->
+            <!-- DESKTOP RIGHT -->
             <div class="hidden lg:flex items-center space-x-4">
                 <div class="relative">
                     <input type="text" placeholder="Search..."
-                        class="border border-gray-300 rounded-lg pl-4 pr-10 py-2 w-48 focus:ring-2 focus:ring-secondary focus:outline-none text-sm sm:text-base">
-                    <button
-                        class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-secondary">
-                        <i class="fas fa-search text-sm sm:text-base"></i>
-                    </button>
+                        class="border border-gray-300 rounded-lg pl-4 pr-10 py-2 w-48 focus:outline-none focus:ring-2 focus:ring-secondary text-sm">
+                    <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                 </div>
                 <a href="{{ route('login') }}"
-                    class="bg-secondary hover:bg-opacity-90 text-white px-4 py-2 rounded-lg font-medium transition duration-300 shadow-md text-sm sm:text-base">
+                    class="bg-secondary hover:bg-amber-600 px-5 py-2.5 rounded-lg text-white font-semibold shadow-md transition">
                     Student Portal
                 </a>
             </div>
 
-            <!-- Mobile Button -->
-            <div class="lg:hidden flex items-center">
-                <button id="mobile-menu-button" class="text-primary hover:text-secondary focus:outline-none p-2">
-                    <i class="fas fa-bars text-xl sm:text-2xl"></i>
-                </button>
-            </div>
+            <!-- MOBILE MENU BUTTON -->
+            <button id="mobile-menu-button" class="lg:hidden text-primary text-3xl p-2">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </div>
 
-    <!-- Mobile Menu -->
+    <!-- MOBILE MENU (FULLY FIXED & CLEAN) -->
     <div id="mobile-menu"
-        class="lg:hidden bg-white shadow-md px-4 py-4 space-y-3 overflow-hidden transition-all duration-300 ease-in-out"
-        style="max-height: 0;">
-        <a href="{{ route('home') }}" class="nav-link block py-2 px-3">Home</a>
-        <a href="#testimonials" class="nav-link block py-2 px-3">Testimonials</a>
-        <a href="#mentors" class="nav-link block py-2 px-3">Mentors</a>
-        <a href="#blog" class="nav-link block py-2 px-3">Blog</a>
-        <a href="#courses" class="nav-link block py-2 px-3">Courses</a>
-        <div class="relative">
-            <input type="text" placeholder="Search..."
-                class="w-full border border-gray-300 rounded-lg pl-4 pr-10 py-2 focus:ring-2 focus:ring-secondary focus:outline-none text-sm sm:text-base">
-            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-secondary">
-                <i class="fas fa-search text-sm sm:text-base"></i>
-            </button>
+         class="lg:hidden bg-white shadow-lg border-t border-gray-200 overflow-hidden transition-all duration-500 ease-in-out"
+         style="max-height: 0;">
+        <div class="px-6 py-6 space-y-5">
+            <a href="{{ route('home') }}" class="block nav-link text-lg font-medium">Home</a>
+            <a href="#testimonials" class="block nav-link text-lg font-medium">Testimonials</a>
+            <a href="{{ route('mentors.index') }}" class="block nav-link text-lg font-medium">Mentors</a>
+            <a href="{{ route('blogs.index') }}" class="block nav-link text-lg font-medium">Blog</a>
+            <a href="{{ route('courses.index') }}" class="block nav-link text-lg font-medium">Courses</a>
+
+            <!-- Mobile Search -->
+            <div class="relative mt-4">
+                <input type="text" placeholder="Search..."
+                    class="w-full border border-gray-300 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-secondary text-base">
+                <i class="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+            </div>
+
+            <!-- Mobile Login Button -->
+            <a href="{{ route('login') }}"
+                class="block bg-secondary hover:bg-amber-600 text-white text-center py-3.5 rounded-lg font-semibold text-lg shadow-md transition">
+                Student Portal
+            </a>
         </div>
-        <a href="#"
-            class="block bg-secondary text-white px-4 py-2 rounded-lg text-center font-medium text-sm sm:text-base">Student
-            Portal</a>
     </div>
 </nav>
 
+<!-- CUSTOM CSS -->
 <style>
     .nav-link {
-        @apply text-gray-600 hover:text-primary font-medium transition duration-300 py-2;
+        @apply text-gray-700 hover:text-primary transition duration-300 relative;
     }
-
     .nav-link.active {
-        @apply border-b-2 border-yellow-500 text-primary font-semibold;
+        @apply text-primary font-bold;
+    }
+    .nav-link.active::after {
+        content: '';
+        @apply absolute bottom-0 left-0 w-full h-0.5 bg-primary;
     }
 
+    #mobile-menu {
+        max-height: 0;
+        transition: max-height 0.5s ease-in-out;
+        overflow: hidden;
+    }
     #mobile-menu.open {
         max-height: 600px;
-        /* Adjusted for more content */
     }
 
     body {
-        padding-top: 100px;
-        /* Matches navbar + top bar height */
+        padding-top: 135px; /* Adjust if needed */
+    }
+    @media (min-width: 1024px) {
+        body { padding-top: 110px; }
     }
 
-
-
-    .bg-secondary {
-        background-color: #F59E0B;
-        /* Orange */
-    }
-
-    .text-primary {
-        color: #1E3A8A;
-        /* Blue */
-    }
-
-    .hover\:text-secondary:hover {
-        color: #F59E0B;
-        /* Orange on hover */
-    }
-
-    .hover\:bg-opacity-90:hover {
-        background-color: #D97706;
-        /* Darker orange on hover */
-    }
+    .bg-primary   { background-color: #1E3A8A; }
+    .text-primary { color: #1E3A8A; }
+    .bg-secondary { background-color: #F59E0B; }
+    .text-secondary { color: #F59E0B; }
 </style>
 
+<!-- MOBILE MENU SCRIPT -->
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const button = document.getElementById('mobile-menu-button');
+        const menu   = document.getElementById('mobile-menu');
 
-        if (!mobileMenuButton || !mobileMenu) {
-            console.error('Mobile menu button or menu not found');
-            return;
-        }
-
-        mobileMenuButton.addEventListener('click', () => {
-            console.log('Mobile menu button clicked');
-            if (mobileMenu.classList.contains('open')) {
-                mobileMenu.classList.remove('open');
-                mobileMenu.style.maxHeight = '0';
-            } else {
-                mobileMenu.classList.add('open');
-                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
-            }
+        button.addEventListener('click', () => {
+            menu.classList.toggle('open');
+            menu.style.maxHeight = menu.classList.contains('open') ? menu.scrollHeight + 'px' : '0';
         });
 
         document.querySelectorAll('#mobile-menu a').forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenu.classList.remove('open');
-                mobileMenu.style.maxHeight = '0';
+                menu.classList.remove('open');
+                menu.style.maxHeight = '0';
             });
         });
 
-        function setActiveLink() {
-            const links = document.querySelectorAll('.nav-link');
-            const currentPath = window.location.pathname;
-            const currentHash = window.location.hash || '#home';
+        // Active link highlighting
+        const setActiveLink = () => {
+            const path = window.location.pathname;
+            const hash = window.location.hash;
 
-            links.forEach(link => {
+            document.querySelectorAll('.nav-link').forEach(link => {
                 const href = link.getAttribute('href');
-                const isActive = (href === currentPath || href === currentHash || (href ===
-                    '{{ route('home') }}' && currentPath === '/'));
-                link.classList.toggle('active', isActive);
+                let active = false;
+
+                if (href.startsWith('#')) active = href === hash;
+                else if (href === '/' || href === '{{ route('home') }}') active = path === '/' || path === '';
+                else active = path.startsWith(href);
+
+                link.classList.toggle('active', active);
             });
-        }
+        };
+
         setActiveLink();
         window.addEventListener('hashchange', setActiveLink);
     });
